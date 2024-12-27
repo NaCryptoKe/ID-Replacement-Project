@@ -1,0 +1,10 @@
+D:\ID Replacement Project\bin\Debug\ID Replacement Project.exe.config
+D:\ID Replacement Project\bin\Debug\ID Replacement Project.exe
+D:\ID Replacement Project\bin\Debug\ID Replacement Project.pdb
+D:\ID Replacement Project\obj\Debug\ID Replacement Project.csproj.AssemblyReference.cache
+D:\ID Replacement Project\obj\Debug\ID_Replacement_Project.Properties.Resources.resources
+D:\ID Replacement Project\obj\Debug\ID Replacement Project.csproj.GenerateResource.cache
+D:\ID Replacement Project\obj\Debug\ID Replacement Project.csproj.CoreCompileInputs.cache
+D:\ID Replacement Project\obj\Debug\ID Replacement Project.exe
+D:\ID Replacement Project\obj\Debug\ID Replacement Project.pdb
+D:\ID Replacement Project\obj\Debug\ID_Replacement_Project.LoginPage.resources
