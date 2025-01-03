@@ -8,3 +8,18 @@ D:\ID Replacement Project\obj\Debug\ID Replacement Project.csproj.CoreCompileInp
 D:\ID Replacement Project\obj\Debug\ID Replacement Project.exe
 D:\ID Replacement Project\obj\Debug\ID Replacement Project.pdb
 D:\ID Replacement Project\obj\Debug\ID_Replacement_Project.LoginPage.resources
+D:\_repos\ID-Replacement-Project\obj\Debug\ID Replacement Project.csproj.AssemblyReference.cache
+D:\_repos\ID-Replacement-Project\obj\Debug\ID_Replacement_Project.LoginPage.resources
+D:\_repos\ID-Replacement-Project\obj\Debug\ID_Replacement_Project.Properties.Resources.resources
+D:\_repos\ID-Replacement-Project\obj\Debug\ID_Replacement_Project.StudentView.resources
+D:\_repos\ID-Replacement-Project\obj\Debug\ID_Replacement_Project.V.resources
+D:\_repos\ID-Replacement-Project\obj\Debug\ID Replacement Project.csproj.GenerateResource.cache
+D:\_repos\ID-Replacement-Project\obj\Debug\ID Replacement Project.csproj.CoreCompileInputs.cache
+D:\_repos\ID-Replacement-Project\obj\Debug\ID Replacement Project.exe
+D:\_repos\ID-Replacement-Project\obj\Debug\ID Replacement Project.pdb
+D:\_repos\ID-Replacement-Project\bin\Debug\ID Replacement Project.exe.config
+D:\_repos\ID-Replacement-Project\bin\Debug\ID Replacement Project.exe
+D:\_repos\ID-Replacement-Project\bin\Debug\ID Replacement Project.pdb
+D:\_repos\ID-Replacement-Project\obj\Debug\ID_Replacement_Project.Dashboard.resources
+D:\_repos\ID-Replacement-Project\obj\Debug\ID_Replacement_Project.Help.resources
+D:\_repos\ID-Replacement-Project\obj\Debug\ID_Replacement_Project.Request.resources

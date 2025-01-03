@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace ID_Replacement_Project
 {
-    public partial class menu : Form
+    public partial class Dashboard : Form
     {
-        public menu()
+        public Dashboard()
         {
             InitializeComponent();
+        }
+
+        private void formDashboardLoad(object sender, EventArgs e)
+        {
+            this.ControlBox = false;
         }
     }
 }
