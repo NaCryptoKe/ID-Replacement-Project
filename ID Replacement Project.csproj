@@ -52,13 +52,12 @@
     <Compile Include="Dashboard.Designer.cs">
       <DependentUpon>Dashboard.cs</DependentUpon>
     </Compile>
-    <Compile Include="Help.cs">
+    <Compile Include="HelpSupport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Help.Designer.cs">
-      <DependentUpon>Help.cs</DependentUpon>
+    <Compile Include="HelpSupport.Designer.cs">
+      <DependentUpon>HelpSupport.cs</DependentUpon>
     </Compile>
-    <Compile Include="mdiProperties.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="LoginPage.cs">
       <SubType>Form</SubType>
@@ -78,23 +77,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StudentIDCardSystemDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="StudentView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="StudentView.Designer.cs">
-      <DependentUpon>StudentView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="V.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="V.Designer.cs">
-      <DependentUpon>V.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Dashboard.resx">
       <DependentUpon>Dashboard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Help.resx">
-      <DependentUpon>Help.cs</DependentUpon>
+    <EmbeddedResource Include="HelpSupport.resx">
+      <DependentUpon>HelpSupport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginPage.resx">
       <DependentUpon>LoginPage.cs</DependentUpon>
@@ -111,12 +98,6 @@
     </Compile>
     <EmbeddedResource Include="Request.resx">
       <DependentUpon>Request.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="StudentView.resx">
-      <DependentUpon>StudentView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="V.resx">
-      <DependentUpon>V.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

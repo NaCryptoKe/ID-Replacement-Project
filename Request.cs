@@ -17,9 +17,14 @@ namespace ID_Replacement_Project
             InitializeComponent();
         }
 
-        private void formRequestLoad(object sender, EventArgs e)
+        private void label2_Click(object sender, EventArgs e)
         {
-            this.ControlBox = false;
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

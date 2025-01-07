@@ -16,10 +16,5 @@ namespace ID_Replacement_Project
         {
             InitializeComponent();
         }
-
-        private void formDashboardLoad(object sender, EventArgs e)
-        {
-            this.ControlBox = false;
-        }
     }
 }

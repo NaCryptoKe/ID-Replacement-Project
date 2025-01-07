@@ -39,8 +39,8 @@ namespace ID_Replacement_Project
                     username = usernameText.Text;
                     password = passwordText.Text;
 
-                    //menu menu = new menu();
-                    //menu.Show();
+                    MainForm dashboard = new MainForm();
+                    dashboard.Show();
                     this.Hide();
                 }
                 else

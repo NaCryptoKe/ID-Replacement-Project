@@ -10,16 +10,16 @@ using System.Windows.Forms;
 
 namespace ID_Replacement_Project
 {
-    public partial class Help : Form
+    public partial class HelpSupport : Form
     {
-        public Help()
+        public HelpSupport()
         {
             InitializeComponent();
         }
 
-        private void formHelpLoad(object sender, EventArgs e)
+        private void label4_Click(object sender, EventArgs e)
         {
-            this.ControlBox = false;
+
         }
     }
 }
