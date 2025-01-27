@@ -24,8 +24,8 @@ namespace ID_Replacement
 
             try
             {
-                string querry = $"Select * from Students where StudentID = '{_username}' and Password = '{_password}'";
-                SqlDataAdapter adapter = new SqlDataAdapter(querry, connectionString);
+                string query = $"SELECT * FROM Students WHERE (Email = '{_username}' AND Password = '{_password}') OR (StudentID = '{_username}' AND Password = '{_password}')";
+                SqlDataAdapter adapter = new SqlDataAdapter(query, connectionString);
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
 
