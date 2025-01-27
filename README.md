@@ -34,11 +34,11 @@ It checks whether the username is a valid Student ID or Email and makes sure tha
 ## 📢 Contributing
 Want to make this project even cooler? Feel free to fork the repo, make some changes, and create a pull request! Here are some ideas:
 
-- **Add parameterized queries to make it secure (Yes, we know this could be improved 😉)
+- **Add** parameterized queries to make it secure (Yes, we know this could be improved 😉)
 
-- **Add some awesome features like user registration or password hashing.
+- **Add** some awesome features like user registration or password hashing.
 
-- **Refactor the code to handle multiple SQL queries or improve the database structure.
+- **Refactor** the code to handle multiple SQL queries or improve the database structure.
 
 ## 🎈 Enjoy!
 That's it! You now have a working, basic project that allows you to authenticate with a Student ID or Email. Keep it simple, keep it fun, and always remember: Code like nobody's watching! 😎
