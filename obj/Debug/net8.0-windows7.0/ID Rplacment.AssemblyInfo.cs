@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ID Rplacment")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f020255dc1b1749e16b8c3dcb2b72d938c9f01e6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6e6777c652aa550192faee87758d3b97fd02d6b0")]
 [assembly: System.Reflection.AssemblyProductAttribute("ID Rplacment")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ID Rplacment")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

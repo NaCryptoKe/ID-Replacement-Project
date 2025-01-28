@@ -1,8 +1,8 @@
 using System;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Text;
 using System.Windows.Forms;
+using ID_Rplacment;
 using Microsoft.Data.SqlClient;
 
 namespace ID_Replacement
@@ -15,44 +15,67 @@ namespace ID_Replacement
             InitializeComponent(); // Initialize form components
         }
 
-        SqlConnection connectionString = new SqlConnection("Data Source=QUANTUMEDGE\\SQLEXPRESS;Initial Catalog=IDRepSysstem;Integrated Security=True;Trust Server Certificate=True");
+        // Corrected variable name and connection initialization
+        private readonly SqlConnection _connection = new SqlConnection("Data Source=QUANTUMEDGE\\SQLEXPRESS;Initial Catalog=IDRepSysstem;Integrated Security=True;Trust Server Certificate=True");
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            _username = txtUsername.Text;
-            _password = txtPassword.Text;
+            _username = txtUsername.Text.Trim(); // Trim whitespace
+            _password = txtPassword.Text.Trim();
 
             try
             {
-                string query = $"SELECT * FROM Students WHERE (Email = '{_username}' AND Password = '{_password}') OR (StudentID = '{_username}' AND Password = '{_password}')";
-                SqlDataAdapter adapter = new SqlDataAdapter(query, connectionString);
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
+                // Open the connection before executing the query
+                _connection.Open();
 
-                if (dt.Rows.Count > 0 )
-                {
-                    MainFrame mainFrame = new MainFrame();
-                    mainFrame.Show();
-                    this.Hide();
-                }
-                else
-                {
-                    MessageBox.Show("Error", "Invalid Log In Credentials", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txtUsername.Clear();
-                    txtPassword.Clear();
+                string query = @"
+            SELECT StudentID, FullName FROM Students 
+            WHERE (Email = @username AND Password = @password) 
+               OR (StudentID = @username AND Password = @password)";
 
-                    //To focus on the username
-                    txtUsername.Focus();
+                using (SqlCommand command = new SqlCommand(query, _connection))
+                {
+                    // Use parameterized queries to prevent SQL injection
+                    command.Parameters.AddWithValue("@username", _username);
+                    command.Parameters.AddWithValue("@password", _password);
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    if (dt.Rows.Count > 0)
+                    {
+                        // Store the StudentID and FullName in GlobalVariables
+                        GlobalVariables.LoggedInStudentID = dt.Rows[0]["StudentID"].ToString();
+                        GlobalVariables.LoggedInStudentName = dt.Rows[0]["FullName"].ToString();
+
+                        MainFrame mainFrame = new MainFrame();
+                        mainFrame.Show();
+                        this.Hide();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid Log In Credentials", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        txtUsername.Clear();
+                        txtPassword.Clear();
+                        txtUsername.Focus();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error", "Error connecting to the server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Show exception details for debugging purposes (optional)
+                MessageBox.Show($"Error connecting to the server: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
-                connectionString.Close();
+                // Close the connection in the finally block to ensure it is closed even if an exception occurs
+                if (_connection.State == ConnectionState.Open)
+                {
+                    _connection.Close();
+                }
             }
         }
+
     }
 }

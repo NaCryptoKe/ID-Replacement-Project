@@ -1,4 +1,6 @@
-﻿namespace ID_Replacement
+﻿using System.Globalization;
+
+namespace ID_Replacement
 {
     partial class MainFrame
     {
@@ -10,6 +12,7 @@
         private Button btnSubmitRequest;
         private Label lblTitle;
         private Label lblAppointment;
+        private Label lblDocumentPath;
         private Button btnNewAppointment;
         private Button btnAttachDocument;
         private OpenFileDialog openFileDialog;
@@ -136,12 +139,24 @@
                 Title = "Select Document to Attach"
             };
 
+            lblDocumentPath = new Label
+            {
+                Text = "No document selected",
+                Location = new Point(requestCalendar.Location.X, requestCalendar.Location.Y + requestCalendar.Height + 40), // Place it below the calendar
+                Size = new Size(requestCalendar.Width, 30), // Match the calendar's width initially
+                Font = new Font("Arial", 10, FontStyle.Italic),
+                ForeColor = Color.Gray,
+                AutoSize = false, // Disable auto-sizing to enable word wrapping
+                MaximumSize = new Size(requestCalendar.Width, 0) // Allow unlimited height but limit the width to the calendar
+            };
+
             // Add components to the request tab
             requestTab.Controls.Add(requestCalendar);
             requestTab.Controls.Add(btnAttachDocument);
             requestTab.Controls.Add(lblReason);
             requestTab.Controls.Add(txtReason);
             requestTab.Controls.Add(btnSubmitRequest);
+            requestTab.Controls.Add(lblDocumentPath);
 
             // Add tabs to tab control
             tabControl.TabPages.Add(dashboardTab);
