@@ -3,28 +3,48 @@
   "WorkspaceRootPath": "D:\\ID Rplacment\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\adminform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:adminform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\adminform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:adminform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\adminform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:adminform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\admin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:admin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\mainframe.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:mainframe.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\dbhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:dbhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\mainframe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:mainframe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\mainframe.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:mainframe.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\globalvariables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:globalvariables.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|d:\\id rplacment\\mainframe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DFC60D9F-DD4D-46F0-BA1C-4C3DE1BF714A}|ID Rplacment.csproj|solutionrelative:mainframe.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,20 +54,84 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "Form1.cs",
               "DocumentMoniker": "D:\\ID Rplacment\\Form1.cs",
               "RelativeDocumentMoniker": "Form1.cs",
               "ToolTip": "D:\\ID Rplacment\\Form1.cs",
               "RelativeToolTip": "Form1.cs",
-              "ViewState": "AgIAADUAAAAAAAAAAAAYwBcAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-27T17:42:50.637Z",
               "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AdminForm.cs [Design]",
+              "DocumentMoniker": "D:\\ID Rplacment\\AdminForm.cs",
+              "RelativeDocumentMoniker": "AdminForm.cs",
+              "ToolTip": "D:\\ID Rplacment\\AdminForm.cs [Design]",
+              "RelativeToolTip": "AdminForm.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-29T09:26:12.495Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AdminForm.Designer.cs",
+              "DocumentMoniker": "D:\\ID Rplacment\\AdminForm.Designer.cs",
+              "RelativeDocumentMoniker": "AdminForm.Designer.cs",
+              "ToolTip": "D:\\ID Rplacment\\AdminForm.Designer.cs",
+              "RelativeToolTip": "AdminForm.Designer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-29T09:25:35.908Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AdminForm.cs",
+              "DocumentMoniker": "D:\\ID Rplacment\\AdminForm.cs",
+              "RelativeDocumentMoniker": "AdminForm.cs",
+              "ToolTip": "D:\\ID Rplacment\\AdminForm.cs",
+              "RelativeToolTip": "AdminForm.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-29T09:22:37.089Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Admin.cs",
+              "DocumentMoniker": "D:\\ID Rplacment\\Admin.cs",
+              "RelativeDocumentMoniker": "Admin.cs",
+              "ToolTip": "D:\\ID Rplacment\\Admin.cs",
+              "RelativeToolTip": "Admin.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwAMAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-29T09:21:44.664Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DbHelper.cs",
+              "DocumentMoniker": "D:\\ID Rplacment\\DbHelper.cs",
+              "RelativeDocumentMoniker": "DbHelper.cs",
+              "ToolTip": "D:\\ID Rplacment\\DbHelper.cs",
+              "RelativeToolTip": "DbHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAC3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-29T09:20:15.878Z",
               "EditorCaption": ""
             },
             {
@@ -56,33 +140,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Form1.Designer.cs",
-              "DocumentMoniker": "D:\\ID Rplacment\\Form1.Designer.cs",
-              "RelativeDocumentMoniker": "Form1.Designer.cs",
-              "ToolTip": "D:\\ID Rplacment\\Form1.Designer.cs",
-              "RelativeToolTip": "Form1.Designer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-28T11:15:30.948Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MainFrame.Designer.cs",
-              "DocumentMoniker": "D:\\ID Rplacment\\MainFrame.Designer.cs",
-              "RelativeDocumentMoniker": "MainFrame.Designer.cs",
-              "ToolTip": "D:\\ID Rplacment\\MainFrame.Designer.cs",
-              "RelativeToolTip": "MainFrame.Designer.cs",
-              "ViewState": "AgIAAHwAAAAAAAAAAAAkwJAAAAB4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-28T10:34:58.92Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "GlobalVariables.cs",
               "DocumentMoniker": "D:\\ID Rplacment\\GlobalVariables.cs",
               "RelativeDocumentMoniker": "GlobalVariables.cs",
@@ -95,20 +153,46 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\ID Rplacment\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "D:\\ID Rplacment\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-28T10:37:29.326Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
+              "Title": "MainFrame.Designer.cs",
+              "DocumentMoniker": "D:\\ID Rplacment\\MainFrame.Designer.cs",
+              "RelativeDocumentMoniker": "MainFrame.Designer.cs",
+              "ToolTip": "D:\\ID Rplacment\\MainFrame.Designer.cs",
+              "RelativeToolTip": "MainFrame.Designer.cs",
+              "ViewState": "AgIAAHwAAAAAAAAAAAAkwJAAAAB4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-28T10:34:58.92Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Form1.Designer.cs",
+              "DocumentMoniker": "D:\\ID Rplacment\\Form1.Designer.cs",
+              "RelativeDocumentMoniker": "Form1.Designer.cs",
+              "ToolTip": "D:\\ID Rplacment\\Form1.Designer.cs",
+              "RelativeToolTip": "Form1.Designer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-28T11:15:30.948Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "MainFrame.cs",
               "DocumentMoniker": "D:\\ID Rplacment\\MainFrame.cs",
               "RelativeDocumentMoniker": "MainFrame.cs",
