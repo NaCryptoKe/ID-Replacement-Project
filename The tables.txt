@@ -1,0 +1,258 @@
+The tables
+"CREATE TABLE Students (
+    StudentID VARCHAR(10) PRIMARY KEY,
+    FullName NVARCHAR(100) NOT NULL,
+    Department NVARCHAR(50),
+    Year INT,
+    Email NVARCHAR(100),
+    Password NVARCHAR(25) DEFAULT 'PASSWORD123'
+);
+
+CREATE TABLE IDRequests (
+    RequestID INT IDENTITY PRIMARY KEY,
+    StudentID VARCHAR(10) FOREIGN KEY REFERENCES Students(StudentID), -- Fixed to match Students.StudentID
+    RequestDate DATETIME DEFAULT GETDATE(),
+    Status NVARCHAR(20) CHECK (Status IN ('Pending', 'Approved', 'Rejected', 'Completed')),
+    NotificationSent BIT DEFAULT 0
+);
+
+CREATE TABLE Documents (
+    DocumentID INT IDENTITY PRIMARY KEY,
+    RequestID INT FOREIGN KEY REFERENCES IDRequests(RequestID),
+    DocumentPath NVARCHAR(255) NOT NULL,
+    UploadDate DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE Appointments (
+    AppointmentID INT IDENTITY PRIMARY KEY,
+    RequestID INT FOREIGN KEY REFERENCES IDRequests(RequestID),
+    AppointmentDate DATETIME NOT NULL
+);
+
+CREATE TABLE TransactionLogs (
+    LogID INT IDENTITY PRIMARY KEY,
+    TableName NVARCHAR(50),
+    Operation NVARCHAR(50),
+    ChangeDate DATETIME DEFAULT GETDATE(),
+    Details NVARCHAR(MAX),
+    UserID NVARCHAR(50)
+);
+GO"
+
+Student.cs
+"namespace ID_Replacement.Data.Models
+{
+    public class Student
+    {
+        public string StudentID { get; set; }
+        public string FullName { get; set; }
+        public string Department { get; set; }
+        public int Year { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+}"
+
+StudentRepository.cs
+"using ID_Replacement.Data.Models;
+using Microsoft.Data.SqlClient;
+using ID_Replacement.Data.Repositories.Interface;
+
+namespace ID_Replacement.Data.Repositories.Class
+{
+    public class StudentRepository : IStudentRepository
+    {
+        public Student GetStudentById(string identifier)
+        {
+            try
+            {
+                using (var connection = DatabaseContext.Instance.GetConnection()) // Use singleton instance
+                {
+                    connection.Open();
+                    var query = "SELECT StudentID, FullName, Email, Department, Year, Password FROM Students WHERE StudentID = @Identifier OR Email = @Identifier";
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Identifier", identifier);
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new Student
+                                {
+                                    StudentID = reader["StudentID"].ToString(),
+                                    FullName = reader["FullName"].ToString(),
+                                    Email = reader["Email"].ToString(),
+                                    Department = reader["Department"].ToString(),
+                                    Year = Convert.ToInt32(reader["Year"]),
+                                    Password = reader["Password"].ToString() // TODO: Remove this when using hashed passwords
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine($"Database Error: {sqlEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected Error: {ex.Message}");
+            }
+
+            return null; // Return null if no record is found or an error occurs
+        }
+
+
+        public bool ValidateCredentials(string username, string password)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection()) // Use singleton instance
+            {
+                connection.Open();
+                var query = @"SELECT StudentID FROM Students 
+                              WHERE (Email = @username OR StudentID = @username) 
+                              AND Password = @password";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    command.Parameters.AddWithValue("@password", password);
+                    return command.ExecuteScalar() != null;
+                }
+            }
+        }
+    }
+}
+"
+IStudentRepository
+"using ID_Replacement.Data.Models;
+
+namespace ID_Replacement.Data.Repositories.Interface
+{
+    public interface IStudentRepository
+    {
+        Student GetStudentById(string studentId);
+        bool ValidateCredentials(string username, string password);
+    }
+}"
+StudentService.cs
+"using ID_Replacement.Data.Models;
+using ID_Replacement.Data.Repositories.Interface;
+using ID_Replacement.Services.Interface;
+
+namespace ID_Replacement.Services
+{
+    public class StudentService : IStudentService
+    {
+        private readonly IStudentRepository _studentRepository;
+
+        public StudentService(IStudentRepository studentRepository)
+        {
+            _studentRepository = studentRepository;
+        }
+
+        public Student GetStudentById(string studentId)
+        {
+            return _studentRepository.GetStudentById(studentId);
+        }
+
+        public bool ValidateCredentials(string username, string password)
+        {
+            return _studentRepository.ValidateCredentials(username, password);
+        }
+    }
+}"
+IStudentService.cs
+"using ID_Replacement.Data.Models;
+
+namespace ID_Replacement.Services.Interface
+{
+    public interface IStudentService
+    {
+        Student GetStudentById(string studentId);
+        bool ValidateCredentials(string username, string password);
+    }
+}"
+
+"DatabaseContext.cs"
+"using Microsoft.Data.SqlClient;
+
+namespace ID_Replacement.Data
+{
+    /*
+     *This class is public because it's intended to be used through out the project
+     *This is a sealed class, which basically means you can't inherit from this class because we don't want it to be overriden by being inherited
+     */
+    public sealed class DatabaseContext
+    {
+        /*
+         * This is a singleton implementaion for the database connection
+         * Static: Shared across the application. Read-only: Can only be assigned once, ensuring the instance cannot be reassigned.
+         * Lazy<T>
+         * Ensures the instance is created only when it is first accessed. This is called lazy initialization.
+         * Avoids unnecessary resource usage if DatabaseContext is never used during the application's lifecycle.
+         * 
+         * The lambda () => new DatabaseContext() specifies how the singleton instance is created: by invoking the private constructor.
+         */
+        private static readonly Lazy<DatabaseContext> _instance =
+            new Lazy<DatabaseContext>(() => new DatabaseContext());
+
+        private readonly string _connectionString;
+
+        // Private constructor ensures no external instantiation
+        private DatabaseContext()
+        {
+            _connectionString = "Data Source=QUANTUMEDGE\\SQLEXPRESS;Initial Catalog=IDRepSysstem;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+        }
+
+        /* 
+         * Public property to access the single instance
+         * Singleton Instance Property
+         * public: Exposed to the rest of the application.
+         * static: No need to create an object; you access it using DatabaseContext.Instance.
+         * Instance: Returns the singleton instance of DatabaseContext stored in _instance
+         * Lazy Evaluation:
+         * _instance.Value: Evaluates the Lazy<T> object and initializes DatabaseContext the first time it’s accessed.
+         */
+        public static DatabaseContext Instance => _instance.Value;
+
+        // Method to get a new SqlConnection
+        public SqlConnection GetConnection()
+        {
+            return new SqlConnection(_connectionString);
+        }
+    }
+}"
+
+FIle structure
+
+ID_Replacement/
+├── Data/
+│   ├── Models/
+│   │   ├── Student.cs
+│   │   ├── IDRequest.cs
+│   │   ├── Document.cs
+│   │   ├── Appointment.cs
+│   │   └── TransactionLog.cs
+│   ├── Repositories/
+│   │   ├── IStudentRepository.cs
+│   │   ├── StudentRepository.cs
+│   │   ├── IIDRequestRepository.cs
+│   │   ├── IDRequestRepository.cs
+│   │   └── (Other repositories for Documents, Appointments, etc.)
+│   └── DatabaseContext.cs
+├── Services/
+│   ├── IStudentService.cs
+│   ├── StudentService.cs
+│   ├── IIDRequestService.cs
+│   ├── IDRequestService.cs
+│   └── (Other services for Documents, Appointments, etc.)
+├── LoginForm.cs
+├── AdminForm.cs
+├── MainFrame.cs
+├── Utilities/
+│   ├── GlobalVariables.cs
+│   └── Helpers.cs
+├── App.config
+├── Program.cs
+└── README.md
+But both repositories and services are divided into two subfolders one for interface another for their instance of a class
