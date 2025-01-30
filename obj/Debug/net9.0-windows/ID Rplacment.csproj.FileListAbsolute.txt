@@ -1,0 +1,51 @@
+c:\All in one\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.exe
+C:\All in one\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.deps.json
+C:\All in one\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.runtimeconfig.json
+c:\All in one\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.dll
+c:\All in one\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.pdb
+c:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.GeneratedMSBuildEditorConfig.editorconfig
+c:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.AssemblyInfoInputs.cache
+c:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.AssemblyInfo.cs
+c:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.csproj.CoreCompileInputs.cache
+c:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.dll
+c:\All in one\ID Rplacment\obj\Debug\net9.0-windows\refint\ID Rplacment.dll
+c:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.pdb
+C:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.genruntimeconfig.cache
+C:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ref\ID Rplacment.dll
+C:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ID_Replacement.Form1.resources
+C:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.csproj.GenerateResource.cache
+C:\All in one\ID Rplacment\obj\Debug\net9.0-windows\ID_Replacement.MainFrame.resources
+E:\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.exe
+E:\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.deps.json
+E:\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.runtimeconfig.json
+E:\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.dll
+E:\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.pdb
+E:\ID Rplacment\obj\Debug\net9.0-windows\ID_Replacement.Form1.resources
+E:\ID Rplacment\obj\Debug\net9.0-windows\ID_Replacement.MainFrame.resources
+E:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.csproj.GenerateResource.cache
+E:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.GeneratedMSBuildEditorConfig.editorconfig
+E:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.AssemblyInfoInputs.cache
+E:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.AssemblyInfo.cs
+E:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.csproj.CoreCompileInputs.cache
+E:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.dll
+E:\ID Rplacment\obj\Debug\net9.0-windows\refint\ID Rplacment.dll
+E:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.pdb
+E:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.genruntimeconfig.cache
+E:\ID Rplacment\obj\Debug\net9.0-windows\ref\ID Rplacment.dll
+D:\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.exe
+D:\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.deps.json
+D:\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.runtimeconfig.json
+D:\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.dll
+D:\ID Rplacment\bin\Debug\net9.0-windows\ID Rplacment.pdb
+D:\ID Rplacment\obj\Debug\net9.0-windows\ID_Replacement.Form1.resources
+D:\ID Rplacment\obj\Debug\net9.0-windows\ID_Replacement.MainFrame.resources
+D:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.csproj.GenerateResource.cache
+D:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.GeneratedMSBuildEditorConfig.editorconfig
+D:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.AssemblyInfoInputs.cache
+D:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.AssemblyInfo.cs
+D:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.csproj.CoreCompileInputs.cache
+D:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.dll
+D:\ID Rplacment\obj\Debug\net9.0-windows\refint\ID Rplacment.dll
+D:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.pdb
+D:\ID Rplacment\obj\Debug\net9.0-windows\ID Rplacment.genruntimeconfig.cache
+D:\ID Rplacment\obj\Debug\net9.0-windows\ref\ID Rplacment.dll
