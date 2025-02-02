@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             panel2 = new Panel();
+            button4 = new Button();
             button3 = new Button();
             button2 = new Button();
             button1 = new Button();
@@ -41,12 +43,13 @@
             panel1 = new Panel();
             dataGridView1 = new DataGridView();
             tabPage2 = new TabPage();
-            button4 = new Button();
+            appointmentServiceBindingSource = new BindingSource(components);
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             panel2.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)appointmentServiceBindingSource).BeginInit();
             SuspendLayout();
             // 
             // tabControl1
@@ -87,6 +90,15 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(786, 156);
             panel2.TabIndex = 1;
+            // 
+            // button4
+            // 
+            button4.Location = new Point(614, 93);
+            button4.Name = "button4";
+            button4.Size = new Size(146, 38);
+            button4.TabIndex = 7;
+            button4.Text = "Print Report";
+            button4.UseVisualStyleBackColor = true;
             // 
             // button3
             // 
@@ -166,7 +178,9 @@
             // 
             // dataGridView1
             // 
+            dataGridView1.AutoGenerateColumns = false;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.DataSource = appointmentServiceBindingSource;
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
@@ -184,14 +198,9 @@
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;
             // 
-            // button4
+            // appointmentServiceBindingSource
             // 
-            button4.Location = new Point(614, 93);
-            button4.Name = "button4";
-            button4.Size = new Size(146, 38);
-            button4.TabIndex = 7;
-            button4.Text = "Print Report";
-            button4.UseVisualStyleBackColor = true;
+            appointmentServiceBindingSource.DataSource = typeof(Services.AppointmentService);
             // 
             // AdminView
             // 
@@ -208,6 +217,7 @@
             panel2.PerformLayout();
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)appointmentServiceBindingSource).EndInit();
             ResumeLayout(false);
         }
 
@@ -227,5 +237,6 @@
         private Button button2;
         private Button button1;
         private Button button4;
+        private BindingSource appointmentServiceBindingSource;
     }
 }

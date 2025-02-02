@@ -51,8 +51,9 @@ CREATE VIEW StudentAppointments AS
 SELECT 
     s.FullName,
     s.StudentID,
-    d.DocumentID,
-    a.AppointmentDate
+    a.AppointmentDate,
+	ir.Status,
+    d.DocumentID
 FROM Students s
 JOIN IDRequests ir ON s.StudentID = ir.StudentID
 JOIN Documents d ON ir.RequestID = d.RequestID

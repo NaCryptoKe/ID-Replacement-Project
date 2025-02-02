@@ -20,11 +20,12 @@ namespace ID_Replacement.Data.Repositories.Class
                     {
                         adminViewModel.Add(new AdminViewModel
                         {
-                            StudentID = reader["StudentID"].ToString(),
-                            FullName = reader["FullName"].ToString(),
-                            AppointmentDate = reader.GetDateTime(2),
-                            Status = reader.GetString(3)
+                            StudentID = reader.GetString(reader.GetOrdinal("StudentID")),
+                            FullName = reader.GetString(reader.GetOrdinal("FullName")),
+                            AppointmentDate = reader.GetDateTime(reader.GetOrdinal("AppointmentDate")),
+                            Status = reader.GetString(reader.GetOrdinal("Status"))
                         });
+
                     }
                 }
             }
