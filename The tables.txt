@@ -1,45 +1,49 @@
-The tables
-"CREATE TABLE Students (
-    StudentID VARCHAR(10) PRIMARY KEY,
-    FullName NVARCHAR(100) NOT NULL,
-    Department NVARCHAR(50),
-    Year INT,
-    Email NVARCHAR(100),
-    Password NVARCHAR(25) DEFAULT 'PASSWORD123'
-);
+"namespace ID_Replacement.Data.Models
+{
+    public class AdminViewModel
+    {
+        public string StudentID { get; set; }
+        public string FullName { get; set; }
+        public DateTime AppointmentDate { get; set; }
+        public string Status { get; set; }
+        public string Reason { get; set; }
+    }
+}
+"
 
-CREATE TABLE IDRequests (
-    RequestID INT IDENTITY PRIMARY KEY,
-    StudentID VARCHAR(10) FOREIGN KEY REFERENCES Students(StudentID), -- Fixed to match Students.StudentID
-    RequestDate DATETIME DEFAULT GETDATE(),
-    Status NVARCHAR(20) CHECK (Status IN ('Pending', 'Approved', 'Rejected', 'Completed')),
-    NotificationSent BIT DEFAULT 0
-);
+"namespace ID_Replacement.Data.Models
+{
+    public class Appointment
+    {
+        public int AppointmentID { get; set; }
+        public int RequestID { get; set; }
+        public DateTime AppointmentDate { get; set; }
+    }
+}"
 
-CREATE TABLE Documents (
-    DocumentID INT IDENTITY PRIMARY KEY,
-    RequestID INT FOREIGN KEY REFERENCES IDRequests(RequestID),
-    DocumentPath NVARCHAR(255) NOT NULL,
-    UploadDate DATETIME DEFAULT GETDATE()
-);
+"namespace ID_Replacement.Data.Models
+{
+    public class Document
+    {
+        public int DocumentID { get; set; }
+        public int RequestID { get; set; }
+        public string DocumentPath { get; set; }
+        public DateTime UploadDate { get; set; }
+    }
+}"
 
-CREATE TABLE Appointments (
-    AppointmentID INT IDENTITY PRIMARY KEY,
-    RequestID INT FOREIGN KEY REFERENCES IDRequests(RequestID),
-    AppointmentDate DATETIME NOT NULL
-);
+"namespace ID_Replacement.Data.Models
+{
+    public class IDRequest
+    {
+        public int RequestID { get; set; }
+        public string StudentID { get; set; }
+        public DateTime RequestDate { get; set; }
+        public string Status { get; set; }
+        public bool NotificationSent { get; set; }
+    }
+}"
 
-CREATE TABLE TransactionLogs (
-    LogID INT IDENTITY PRIMARY KEY,
-    TableName NVARCHAR(50),
-    Operation NVARCHAR(50),
-    ChangeDate DATETIME DEFAULT GETDATE(),
-    Details NVARCHAR(MAX),
-    UserID NVARCHAR(50)
-);
-GO"
-
-Student.cs
 "namespace ID_Replacement.Data.Models
 {
     public class Student
@@ -53,7 +57,32 @@ Student.cs
     }
 }"
 
-StudentRepository.cs
+"namespace ID_Replacement.Data.Models
+{
+    public class TransactionLog
+    {
+        public int LogID { get; set; }
+        public string TableName { get; set; }
+        public string Operation { get; set; }
+        public DateTime ChangeDate { get; set; }
+        public string Details { get; set; }
+        public string UserID { get; set; }
+    }
+}"
+
+"using ID_Replacement.Data.Models;
+
+namespace ID_Replacement.Data.Repositories.Interface
+{
+    public interface IStudentRepository
+    {
+        Student GetStudentById(string studentId);
+        bool ValidateCredentials(string username, string password);
+    }
+}"
+
+There are interfaces for all the other models except AdminViewModel.cs
+
 "using ID_Replacement.Data.Models;
 using Microsoft.Data.SqlClient;
 using ID_Replacement.Data.Repositories.Interface;
@@ -123,18 +152,524 @@ namespace ID_Replacement.Data.Repositories.Class
     }
 }
 "
-IStudentRepository
-"using ID_Replacement.Data.Models;
 
-namespace ID_Replacement.Data.Repositories.Interface
+"using System;
+using System.Collections.Generic;
+using ID_Replacement.Data;
+using ID_Replacement.Data.Models;
+using ID_Replacement.Data.Repositories.Interface;
+using Microsoft.Data.SqlClient;
+
+namespace ID_Replacement.Data.Repositories.Class
 {
-    public interface IStudentRepository
+    public class TransactionLogRepository : ITransactionLogRepository
     {
-        Student GetStudentById(string studentId);
-        bool ValidateCredentials(string username, string password);
+        /// <summary>
+        /// Retrieves a transaction log by its ID.
+        /// </summary>
+        public TransactionLog GetLogById(int logId)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT LogID, TableName, Operation, ChangeDate, Details, UserID FROM TransactionLogs WHERE LogID = @LogID";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@LogID", logId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new TransactionLog
+                            {
+                                LogID = reader.GetInt32(0),
+                                TableName = reader.GetString(1),
+                                Operation = reader.GetString(2),
+                                ChangeDate = reader.GetDateTime(3),
+                                Details = reader.IsDBNull(4) ? null : reader.GetString(4),
+                                UserID = reader.IsDBNull(5) ? null : reader.GetString(5)
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves all logs related to a specific table.
+        /// </summary>
+        public IEnumerable<TransactionLog> GetLogsByTableName(string tableName)
+        {
+            var logs = new List<TransactionLog>();
+
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT LogID, TableName, Operation, ChangeDate, Details, UserID FROM TransactionLogs WHERE TableName = @TableName";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@TableName", tableName);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            logs.Add(new TransactionLog
+                            {
+                                LogID = reader.GetInt32(0),
+                                TableName = reader.GetString(1),
+                                Operation = reader.GetString(2),
+                                ChangeDate = reader.GetDateTime(3),
+                                Details = reader.IsDBNull(4) ? null : reader.GetString(4),
+                                UserID = reader.IsDBNull(5) ? null : reader.GetString(5)
+                            });
+                        }
+                    }
+                }
+            }
+            return logs;
+        }
+
+        /// <summary>
+        /// Adds a new transaction log entry.
+        /// </summary>
+        public void AddLog(TransactionLog log)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+
+                var query = @"INSERT INTO TransactionLogs (TableName, Operation, Details, UserID) 
+                              VALUES (@TableName, @Operation, @Details, @UserID);
+                              SELECT SCOPE_IDENTITY();"; // Returns the new LogID
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@TableName", log.TableName);
+                    command.Parameters.AddWithValue("@Operation", log.Operation);
+                    command.Parameters.AddWithValue("@Details", string.IsNullOrWhiteSpace(log.Details) ? DBNull.Value : (object)log.Details);
+                    command.Parameters.AddWithValue("@UserID", string.IsNullOrWhiteSpace(log.UserID) ? DBNull.Value : (object)log.UserID);
+
+                    var result = command.ExecuteScalar();
+                    if (result != null)
+                    {
+                        log.LogID = Convert.ToInt32(result);
+                    }
+                    else
+                    {
+                        throw new Exception("Failed to insert transaction log.");
+                    }
+                }
+            }
+        }
     }
-}"
-StudentService.cs
+}
+"
+
+"using System;
+using System.Collections.Generic;
+using ID_Replacement.Data;
+using ID_Replacement.Data.Models;
+using ID_Replacement.Data.Repositories.Interface;
+using Microsoft.Data.SqlClient;
+
+namespace ID_Replacement.Data.Repositories.Class
+{
+    public class IDRequestRepository : IIDRequestRepository
+    {
+        /// <summary>
+        /// Retrieves an ID request by its ID.
+        /// </summary>
+        public IDRequest GetRequestById(int requestId)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT RequestID, StudentID, RequestDate, Status, NotificationSent FROM IDRequests WHERE RequestID = @RequestID";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@RequestID", requestId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new IDRequest
+                            {
+                                RequestID = reader.GetInt32(0),
+                                StudentID = reader.GetString(1),
+                                RequestDate = reader.GetDateTime(2),
+                                Status = reader.GetString(3),
+                                NotificationSent = reader.GetBoolean(4)
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves all ID requests for a specific student.
+        /// </summary>
+        public IEnumerable<IDRequest> GetRequestsByStudentId(string studentId)
+        {
+            var requests = new List<IDRequest>();
+
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT RequestID, StudentID, RequestDate, Status, NotificationSent FROM IDRequests WHERE StudentID = @StudentID";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@StudentID", studentId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            requests.Add(new IDRequest
+                            {
+                                RequestID = reader.GetInt32(0),
+                                StudentID = reader.GetString(1),
+                                RequestDate = reader.GetDateTime(2),
+                                Status = reader.GetString(3),
+                                NotificationSent = reader.GetBoolean(4)
+                            });
+                        }
+                    }
+                }
+            }
+            return requests;
+        }
+
+        /// <summary>
+        /// Adds a new ID request to the database.
+        /// </summary>
+        public void AddRequest(IDRequest request)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+
+                var query = @"INSERT INTO IDRequests (StudentID, Status) 
+                              VALUES (@StudentID, @Status);
+                              SELECT SCOPE_IDENTITY();"; // Returns the newly inserted RequestID
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    // Ensure StudentID is valid
+                    if (string.IsNullOrWhiteSpace(request.StudentID))
+                    {
+                        throw new ArgumentException("Invalid StudentID. Request must be linked to a valid student.");
+                    }
+
+                    command.Parameters.AddWithValue("@StudentID", request.StudentID);
+                    command.Parameters.AddWithValue("@Status", request.Status ?? "Pending");
+
+                    var result = command.ExecuteScalar();
+                    if (result != null)
+                    {
+                        request.RequestID = Convert.ToInt32(result);
+                    }
+                    else
+                    {
+                        throw new Exception("Failed to insert ID request.");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the status of an ID request.
+        /// </summary>
+        public void UpdateRequestStatus(int requestId, string status)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                var query = "UPDATE IDRequests SET Status = @Status WHERE RequestID = @RequestID";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Status", status);
+                    command.Parameters.AddWithValue("@RequestID", requestId);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected == 0)
+                    {
+                        throw new Exception($"No request found with ID {requestId}");
+                    }
+                }
+            }
+        }
+    }
+}
+"
+
+"using System;
+using System.Collections.Generic;
+using ID_Replacement.Data;
+using ID_Replacement.Data.Models;
+using ID_Replacement.Data.Repositories.Interface;
+using Microsoft.Data.SqlClient;
+
+namespace ID_Replacement.Data.Repositories.Class
+{
+    public class DocumentRepository : IDocumentRepository
+    {
+        /// <summary>
+        /// Retrieves a document by its ID.
+        /// </summary>
+        public Document GetDocumentById(int documentId)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT DocumentID, RequestID, DocumentPath, UploadDate FROM Documents WHERE DocumentID = @DocumentID";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@DocumentID", documentId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Document
+                            {
+                                DocumentID = reader.GetInt32(0),
+                                RequestID = reader.GetInt32(1),
+                                DocumentPath = reader.GetString(2),
+                                UploadDate = reader.GetDateTime(3)
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves all documents for a specific request ID.
+        /// </summary>
+        public IEnumerable<Document> GetDocumentsByRequestId(int requestId)
+        {
+            var documents = new List<Document>();
+
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT DocumentID, RequestID, DocumentPath, UploadDate FROM Documents WHERE RequestID = @RequestID";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@RequestID", requestId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            documents.Add(new Document
+                            {
+                                DocumentID = reader.GetInt32(0),
+                                RequestID = reader.GetInt32(1),
+                                DocumentPath = reader.GetString(2),
+                                UploadDate = reader.GetDateTime(3)
+                            });
+                        }
+                    }
+                }
+            }
+            return documents;
+        }
+
+        /// <summary>
+        /// Adds a new document to the database.
+        /// </summary>
+        public void AddDocument(Document document)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+
+                var query = @"INSERT INTO Documents (RequestID, DocumentPath) 
+                              VALUES (@RequestID, @DocumentPath);
+                              SELECT SCOPE_IDENTITY();"; // Returns the newly inserted DocumentID
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    // Ensure RequestID exists to prevent foreign key errors
+                    if (document.RequestID <= 0)
+                    {
+                        throw new ArgumentException("Invalid RequestID. Document must be linked to a valid request.");
+                    }
+
+                    command.Parameters.AddWithValue("@RequestID", document.RequestID);
+                    command.Parameters.AddWithValue("@DocumentPath", document.DocumentPath);
+
+                    var result = command.ExecuteScalar();
+                    if (result != null)
+                    {
+                        document.DocumentID = Convert.ToInt32(result);
+                    }
+                    else
+                    {
+                        throw new Exception("Failed to insert document.");
+                    }
+                }
+            }
+        }
+    }
+}
+"
+
+"using System;
+using System.Collections.Generic;
+using ID_Replacement.Data;
+using ID_Replacement.Data.Models;
+using ID_Replacement.Data.Repositories.Interface;
+using Microsoft.Data.SqlClient;
+
+namespace ID_Replacement.Data.Repositories.Class
+{
+    public class AppointmentRepository : IAppointmentRepository
+    {
+        /// <summary>
+        /// Retrieves an appointment by its ID.
+        /// </summary>
+        public Appointment GetAppointmentById(int appointmentId)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT AppointmentID, RequestID, AppointmentDate FROM Appointments WHERE AppointmentID = @AppointmentID";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@AppointmentID", appointmentId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Appointment
+                            {
+                                AppointmentID = reader.GetInt32(0),
+                                RequestID = reader.GetInt32(1),
+                                AppointmentDate = reader.GetDateTime(2)
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves all appointments for a specific request ID.
+        /// </summary>
+        public IEnumerable<Appointment> GetAppointmentsByRequestId(int requestId)
+        {
+            var appointments = new List<Appointment>();
+
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                var query = "SELECT AppointmentID, RequestID, AppointmentDate FROM Appointments WHERE RequestID = @RequestID";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@RequestID", requestId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            appointments.Add(new Appointment
+                            {
+                                AppointmentID = reader.GetInt32(0),
+                                RequestID = reader.GetInt32(1),
+                                AppointmentDate = reader.GetDateTime(2)
+                            });
+                        }
+                    }
+                }
+            }
+            return appointments;
+        }
+
+        /// <summary>
+        /// Adds a new appointment to the database.
+        /// </summary>
+        public void AddAppointment(Appointment appointment)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                
+                var query = @"INSERT INTO Appointments (RequestID, AppointmentDate) 
+                              VALUES (@RequestID, @AppointmentDate);
+                              SELECT SCOPE_IDENTITY();"; // Returns the new AppointmentID
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    // Ensure RequestID exists to prevent foreign key errors
+                    if (appointment.RequestID <= 0)
+                    {
+                        throw new ArgumentException("Invalid RequestID. Appointment must be linked to a valid request.");
+                    }
+
+                    command.Parameters.AddWithValue("@RequestID", appointment.RequestID);
+                    command.Parameters.AddWithValue("@AppointmentDate", appointment.AppointmentDate);
+
+                    var result = command.ExecuteScalar();
+                    if (result != null)
+                    {
+                        appointment.AppointmentID = Convert.ToInt32(result);
+                    }
+                    else
+                    {
+                        throw new Exception("Failed to insert appointment.");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the appointment date.
+        /// </summary>
+        public void UpdateAppointmentDate(int appointmentId, DateTime newDate)
+        {
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+                var query = "UPDATE Appointments SET AppointmentDate = @NewDate WHERE AppointmentID = @AppointmentID";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@NewDate", newDate);
+                    command.Parameters.AddWithValue("@AppointmentID", appointmentId);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected == 0)
+                    {
+                        throw new Exception($"No appointment found with ID {appointmentId}");
+                    }
+                }
+            }
+        }
+    }
+}
+"
+
+All except AdminViewModel.cs have there own version of
 "using ID_Replacement.Data.Models;
 using ID_Replacement.Data.Repositories.Interface;
 using ID_Replacement.Services.Interface;
@@ -161,7 +696,7 @@ namespace ID_Replacement.Services
         }
     }
 }"
-IStudentService.cs
+and
 "using ID_Replacement.Data.Models;
 
 namespace ID_Replacement.Services.Interface
@@ -173,86 +708,44 @@ namespace ID_Replacement.Services.Interface
     }
 }"
 
-"DatabaseContext.cs"
-"using Microsoft.Data.SqlClient;
+"using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using ID_Replacement.Data.Models;
+using ID_Replacement.Data.Repositories.Class;
+using ID_Replacement.Data.Repositories.Interface;
+using ID_Replacement.Services;
+using ID_Replacement.Services.Interface;
+using ID_Replacement.Data.Repositories.Class;
 
-namespace ID_Replacement.Data
+namespace ID_Replacement
 {
-    /*
-     *This class is public because it's intended to be used through out the project
-     *This is a sealed class, which basically means you can't inherit from this class because we don't want it to be overriden by being inherited
-     */
-    public sealed class DatabaseContext
+    public partial class AdminView : Form
     {
-        /*
-         * This is a singleton implementaion for the database connection
-         * Static: Shared across the application. Read-only: Can only be assigned once, ensuring the instance cannot be reassigned.
-         * Lazy<T>
-         * Ensures the instance is created only when it is first accessed. This is called lazy initialization.
-         * Avoids unnecessary resource usage if DatabaseContext is never used during the application's lifecycle.
-         * 
-         * The lambda () => new DatabaseContext() specifies how the singleton instance is created: by invoking the private constructor.
-         */
-        private static readonly Lazy<DatabaseContext> _instance =
-            new Lazy<DatabaseContext>(() => new DatabaseContext());
-
-        private readonly string _connectionString;
-
-        // Private constructor ensures no external instantiation
-        private DatabaseContext()
+        public List<AdminViewModel> StudentsData { get; set; }
+        public AdminView()
         {
-            _connectionString = "Data Source=QUANTUMEDGE\\SQLEXPRESS;Initial Catalog=IDRepSysstem;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+            StudentsData = GetStudents();
+            InitializeComponent();
         }
 
-        /* 
-         * Public property to access the single instance
-         * Singleton Instance Property
-         * public: Exposed to the rest of the application.
-         * static: No need to create an object; you access it using DatabaseContext.Instance.
-         * Instance: Returns the singleton instance of DatabaseContext stored in _instance
-         * Lazy Evaluation:
-         * _instance.Value: Evaluates the Lazy<T> object and initializes DatabaseContext the first time it’s accessed.
-         */
-        public static DatabaseContext Instance => _instance.Value;
-
-        // Method to get a new SqlConnection
-        public SqlConnection GetConnection()
+        private List<AdminViewModel>? GetStudents()
         {
-            return new SqlConnection(_connectionString);
+            var list = new List<AdminViewModel>();
+            return list;
+        }
+
+        private void AdminViewLoad(object sender, EventArgs e)
+        {
+            var students = this.StudentsData;
+            dataGridView1.DataSource = students;
         }
     }
-}"
-
-FIle structure
-
-ID_Replacement/
-├── Data/
-│   ├── Models/
-│   │   ├── Student.cs
-│   │   ├── IDRequest.cs
-│   │   ├── Document.cs
-│   │   ├── Appointment.cs
-│   │   └── TransactionLog.cs
-│   ├── Repositories/
-│   │   ├── IStudentRepository.cs
-│   │   ├── StudentRepository.cs
-│   │   ├── IIDRequestRepository.cs
-│   │   ├── IDRequestRepository.cs
-│   │   └── (Other repositories for Documents, Appointments, etc.)
-│   └── DatabaseContext.cs
-├── Services/
-│   ├── IStudentService.cs
-│   ├── StudentService.cs
-│   ├── IIDRequestService.cs
-│   ├── IDRequestService.cs
-│   └── (Other services for Documents, Appointments, etc.)
-├── LoginForm.cs
-├── AdminForm.cs
-├── MainFrame.cs
-├── Utilities/
-│   ├── GlobalVariables.cs
-│   └── Helpers.cs
-├── App.config
-├── Program.cs
-└── README.md
-But both repositories and services are divided into two subfolders one for interface another for their instance of a class
+}
+"

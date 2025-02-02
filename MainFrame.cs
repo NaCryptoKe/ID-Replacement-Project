@@ -12,6 +12,24 @@ namespace ID_Replacement
         {
             InitializeComponent();
             _loggedInStudent = student;
+            this.Load += new EventHandler(MainFrameLoad);
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MainFrameLoad(object sender, EventArgs e)
+        {
+            historyGrid.ColumnCount = 3;
+            historyGrid.Columns[0].Name = "Request Date";
+            historyGrid.Columns[1].Name = "Appointment Date";
+            historyGrid.Columns[2].Name = "Status";
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
         }
     }
 }

@@ -46,6 +46,20 @@ CREATE TABLE TransactionLogs (
 );
 GO
 
+-- View
+CREATE VIEW StudentAppointments AS
+SELECT 
+    s.FullName,
+    s.StudentID,
+    d.DocumentID,
+    a.AppointmentDate
+FROM Students s
+JOIN IDRequests ir ON s.StudentID = ir.StudentID
+JOIN Documents d ON ir.RequestID = d.RequestID
+JOIN Appointments a ON ir.RequestID = a.RequestID;
+GO
+
+
 -- 3. Function (Created BEFORE stored procedures that reference it)
 CREATE FUNCTION dbo.GetNextAvailableAppointment()
 RETURNS DATETIME

@@ -6,5 +6,6 @@ namespace ID_Replacement.Data.Repositories.Interface
     {
         Student GetStudentById(string studentId);
         bool ValidateCredentials(string username, string password);
+
     }
 }

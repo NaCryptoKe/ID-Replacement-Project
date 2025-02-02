@@ -63,3 +63,5 @@ D:\ID_Replacement\obj\Debug\net8.0-windows\ID_Replacement.genruntimeconfig.cache
 D:\ID_Replacement\obj\Debug\net8.0-windows\ref\ID_Replacement.dll
 D:\ID_Replacement\obj\Debug\net8.0-windows\ID_Replacement.LoginForm.resources
 D:\ID_Replacement\obj\Debug\net8.0-windows\ID_Replacement.MainFrame.resources
+D:\ID_Replacement\obj\Debug\net8.0-windows\ID_Replacement.sourcelink.json
+D:\ID_Replacement\obj\Debug\net8.0-windows\ID_Replacement.AdminView.resources
