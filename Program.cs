@@ -22,9 +22,10 @@ namespace ID_Replacement
             IAdminViewModelRepository adminViewModelRepository = new AdminViewModelRepository();
 
             IAdminViewModelService adminViewModelService = new AdminViewModelService(adminViewModelRepository);
+            IStudentService studentService = new StudentService(studentRepository);
 
             // Start the AdminView Form with dependencies
-            Application.Run(new AdminForm());
+            Application.Run(new LoginForm(studentService));
         }
     }
 }

@@ -4,6 +4,7 @@ namespace ID_Replacement.Services.Interface
 {
     public interface IAdminViewModelService
     {
-        IEnumerable<AdminViewModel> GetAllStudents();
+        List<AdminViewModel> GetAllPendingStudents();
+        List<AdminViewModel> GetAllCompletedStudents();
     }
 }

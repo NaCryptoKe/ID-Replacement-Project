@@ -12,9 +12,15 @@ namespace ID_Replacement.Services.Class
         {
             _adminViewModelRepository = adminViewModelRepository;
         }
-        public IEnumerable<AdminViewModel> GetAllStudents()
+        public List<AdminViewModel> GetAllPendingStudents()
         {
-            return _adminViewModelRepository.GetAllStudents();
+            return _adminViewModelRepository.GetAllPendingStudents().ToList();
         }
+        public List<AdminViewModel> GetAllCompletedStudents()
+        {
+            return _adminViewModelRepository.GetAllCompletedStudents().ToList();
+        }
+
+
     }
 }

@@ -3,127 +3,25 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
+using ID_Replacement.Data.Repositories.Interface;
+using ID_Replacement.Data.Repositories.Class;
+using ID_Replacement.Services.Class;
+using ID_Replacement.Services.Interface;
+using ID_Replacement.Data.Models;
 
 namespace ID_Replacement
 {
     public partial class AdminForm : Form
     {
-        private Admin admin;
-        private TabControl tabControl;
-        private TabPage pendingTab;
-        private TabPage completedTab;
-        private ListView pendingListView;
-        private ListView completedListView;
-        private Panel detailsPanel;
-        private Label detailsLabel;
-        private Button viewButton;
-        private Button acceptButton;
-        private Button denyButton;
-        private Button deleteButton;
-        private Panel buttonPanel;
+        private IAdminViewModelRepository _adminViewModelRepository;
+        private IAdminViewModelService adminViewModelService;
 
-        public AdminForm()
+        public AdminForm(IAdminViewModelRepository adminViewModelRepository)
         {
-            admin = new Admin();
+            _adminViewModelRepository = adminViewModelRepository;
+            adminViewModelService = new AdminViewModelService(_adminViewModelRepository);
             SetupUI();
             LoadRequests();
-        }
-
-        private void SetupUI()
-        {
-            this.Size = new Size(1000, 800);
-            this.Text = "Admin Review Panel";
-
-            var mainPanel = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                RowCount = 2,
-                ColumnCount = 1
-            };
-
-            mainPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 70F));
-            mainPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 30F));
-
-            tabControl = new TabControl { Dock = DockStyle.Fill };
-
-            pendingTab = new TabPage("Pending Requests");
-            completedTab = new TabPage("Completed Requests");
-
-            pendingListView = CreateListView();
-            completedListView = CreateListView();
-
-            pendingTab.Controls.Add(pendingListView);
-            completedTab.Controls.Add(completedListView);
-
-            tabControl.TabPages.Add(pendingTab);
-            tabControl.TabPages.Add(completedTab);
-
-            detailsPanel = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BorderStyle = BorderStyle.FixedSingle
-            };
-
-            detailsLabel = new Label
-            {
-                AutoSize = true,
-                Location = new Point(10, 10),
-                Font = new Font("Arial", 10)
-            };
-
-            buttonPanel = new Panel
-            {
-                Dock = DockStyle.Bottom,
-                Height = 90
-            };
-
-            viewButton = new Button
-            {
-                Text = "View File",
-                Width = 100,
-                Location = new Point(10, 10),
-                BackColor = Color.Blue,
-                ForeColor = Color.White,
-                Enabled = false
-            };
-
-            acceptButton = new Button
-            {
-                Text = "Accept",
-                Width = 100,
-                Location = new Point(10, 50),
-                BackColor = Color.Gray,
-                Enabled = false
-            };
-
-            denyButton = new Button
-            {
-                Text = "Deny",
-                Width = 100,
-                Location = new Point(120, 50),
-                BackColor = Color.Gray,
-                Enabled = false
-            };
-
-            deleteButton = new Button
-            {
-                Text = "Delete",
-                Width = 100,
-                Location = new Point(230, 50),
-                BackColor = Color.Gray,
-                Enabled = false,
-                Visible = false
-            };
-
-            buttonPanel.Controls.AddRange(new Control[] { viewButton, acceptButton, denyButton, deleteButton });
-            detailsPanel.Controls.AddRange(new Control[] { detailsLabel, buttonPanel });
-
-            mainPanel.Controls.Add(tabControl, 0, 0);
-            mainPanel.Controls.Add(detailsPanel, 0, 1);
-
-            this.Controls.Add(mainPanel);
-
-            SetupEventHandlers();
         }
 
         private ListView CreateListView()
@@ -138,8 +36,8 @@ namespace ID_Replacement
             };
 
             listView.Columns.Add("Full Name", 150);
-            listView.Columns.Add("User ID", 100);
-            listView.Columns.Add("Scheduled Date", 120);
+            listView.Columns.Add("Student ID", 100);
+            listView.Columns.Add("Appointment Date", 120);
             listView.Columns.Add("Status", 100);
             listView.Columns.Add("Remarks", 200);
 
@@ -151,28 +49,38 @@ namespace ID_Replacement
             pendingListView.Items.Clear();
             completedListView.Items.Clear();
 
-            foreach (var request in admin.GetPendingRequests())
+            var pendingStudents = adminViewModelService.GetAllPendingStudents().ToList();
+
+            if (pendingStudents != null)
             {
-                AddRequestToListView(pendingListView, request);
+                foreach (var request in pendingStudents)
+                {
+                    AddRequestToListView(pendingListView, request);
+                }
             }
 
-            foreach (var request in admin.GetCompletedRequests())
+            var completedStudents = adminViewModelService.GetAllCompletedStudents().ToList();
+
+            if (completedStudents != null)
             {
-                AddRequestToListView(completedListView, request);
+                foreach (var request in completedStudents)
+                {
+                    AddRequestToListView(completedListView, request);
+                }
             }
         }
 
-        private void AddRequestToListView(ListView listView, Admin.Request request)
+        private void AddRequestToListView(ListView listView, AdminViewModel students)
         {
             var item = new ListViewItem(new[]
             {
-                request.FullName,
-                request.UserId,
-                request.ScheduledDate.ToShortDateString(),
-                request.Status.ToString(),
-                request.Remarks
+                students.FullName,
+                students.StudentID,
+                students.AppointmentDate?.ToShortDateString() ?? "N/A",
+                students.Status.ToString(),
+                students.Remarks
             });
-            item.Tag = request;
+            item.Tag = students;
             listView.Items.Add(item);
         }
 
@@ -184,11 +92,11 @@ namespace ID_Replacement
 
             viewButton.Click += (s, e) =>
             {
-                if (viewButton.Tag is Admin.Request request && !string.IsNullOrEmpty(request.FilePath))
+                if (viewButton.Tag is AdminViewModel request && !string.IsNullOrEmpty(request.FilePath))
                 {
                     if (File.Exists(request.FilePath))
                     {
-                        Process.Start(request.FilePath);
+                        Console.WriteLine("Test");
                     }
                     else
                     {
@@ -199,30 +107,30 @@ namespace ID_Replacement
 
             acceptButton.Click += (s, e) =>
             {
-                if (acceptButton.Tag is Admin.Request request)
+                if (acceptButton.Tag is AdminViewModel request)
                 {
-                    admin.AcceptRequest(request.UserId);
+                    _adminViewModelRepository.AcceptRequest(request);
                     LoadRequests();
                 }
             };
 
             denyButton.Click += (s, e) =>
             {
-                if (denyButton.Tag is Admin.Request request)
+                if (denyButton.Tag is AdminViewModel request)
                 {
-                    admin.DenyRequest(request.UserId);
+                    _adminViewModelRepository.DenyRequest(request);
                     LoadRequests();
                 }
             };
 
             deleteButton.Click += (s, e) =>
             {
-                if (deleteButton.Tag is Admin.Request request)
+                if (deleteButton.Tag is AdminViewModel request)
                 {
                     if (MessageBox.Show($"Delete request from {request.FullName}?", "Confirm",
                         MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        admin.DeleteRequest(request.UserId);
+                        admin.DeleteRequest(request.StudentID);
                         LoadRequests();
                     }
                 }
@@ -233,21 +141,20 @@ namespace ID_Replacement
         {
             if (e.IsSelected && e.Item != null)
             {
-                var request = (Admin.Request)e.Item.Tag;
+                var request = (AdminViewModel)e.Item.Tag;
                 ShowDetails(request);
             }
         }
 
-        private void ShowDetails(Admin.Request request)
+        private void ShowDetails(AdminViewModel request)
         {
             detailsLabel.Text = $"Full Name: {request.FullName}\n\n" +
-                               $"User ID: {request.UserId}\n\n" +
-                               $"Scheduled Date: {request.ScheduledDate.ToShortDateString()}\n\n" +
+                               $"Student ID: {request.StudentID}\n\n" +
+                               $"Scheduled Date: {request.AppointmentDate?.ToShortDateString() ?? "N/A"}\n\n" +
                                $"Status: {request.Status}\n\n" +
-                               $"Remarks: {request.Remarks}\n\n" +
-                               $"Facts: {request.Facts}";
+                               $"Remarks: {request.Remarks}\n\n";
 
-            bool isPending = request.Status == Admin.RequestStatus.Pending;
+            bool isPending = request.Statuses == AdminViewModel.RequestStatus.Pending;
             viewButton.Enabled = true;
             acceptButton.Enabled = isPending;
             denyButton.Enabled = isPending;
