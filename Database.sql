@@ -53,6 +53,7 @@ SELECT
     s.StudentID,
     a.AppointmentDate,
 	ir.Status,
+    ir.RequestID,
     d.DocumentID
 FROM Students s
 JOIN IDRequests ir ON s.StudentID = ir.StudentID
@@ -60,32 +61,34 @@ JOIN Documents d ON ir.RequestID = d.RequestID
 JOIN Appointments a ON ir.RequestID = a.RequestID;
 GO
 
+CREATE VIEW RequestAppointmentStatus AS
+SELECT 
+    S.StudentID,
+    IR.RequestDate,
+    A.AppointmentDate,
+    IR.Status
+FROM 
+    IDRequests IR
+JOIN 
+    Appointments A
+    ON IR.RequestID = A.RequestID
+JOIN 
+    Students S
+    ON IR.StudentID = S.StudentID;
+GO
+
 
 -- 3. Function (Created BEFORE stored procedures that reference it)
-CREATE FUNCTION dbo.GetNextAvailableAppointment()
-RETURNS DATETIME
+CREATE FUNCTION dbo.GetOverbookedDates()
+RETURNS TABLE
 AS
-BEGIN
-    DECLARE @NextSlot DATETIME = GETDATE();
-    DECLARE @MaxAppointments INT = 5;
-    WHILE 1 = 1
-    BEGIN
-        -- Skip weekends (1=Sunday, 7=Saturday)
-        IF DATEPART(WEEKDAY, @NextSlot) IN (1, 7)
-        BEGIN
-            SET @NextSlot = DATEADD(DAY, 1, @NextSlot);
-            CONTINUE;
-        END
-        -- Check available slots for the day
-        IF (SELECT COUNT(*) FROM Appointments 
-            WHERE CAST(AppointmentDate AS DATE) = CAST(@NextSlot AS DATE)) < @MaxAppointments
-        BEGIN
-            BREAK;
-        END
-        SET @NextSlot = DATEADD(DAY, 1, @NextSlot);
-    END
-    RETURN @NextSlot;
-END;
+RETURN
+(
+    SELECT DISTINCT CAST(AppointmentDate AS DATE) AS OverbookedDate
+    FROM Appointments
+    GROUP BY CAST(AppointmentDate AS DATE)
+    HAVING COUNT(*) >= 5 -- Change 5 to your MaxAppointments limit
+);
 GO
 
 -- 4. Stored Procedures

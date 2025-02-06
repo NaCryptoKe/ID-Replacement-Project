@@ -14,12 +14,12 @@ namespace ID_Replacement
     public partial class AdminForm : Form
     {
         private IAdminViewModelRepository _adminViewModelRepository;
-        private IAdminViewModelService adminViewModelService;
+        private IAdminViewModelService _adminViewModelService;
 
         public AdminForm(IAdminViewModelRepository adminViewModelRepository)
         {
             _adminViewModelRepository = adminViewModelRepository;
-            adminViewModelService = new AdminViewModelService(_adminViewModelRepository);
+            _adminViewModelService = new AdminViewModelService(_adminViewModelRepository);
             SetupUI();
             LoadRequests();
         }
@@ -49,7 +49,7 @@ namespace ID_Replacement
             pendingListView.Items.Clear();
             completedListView.Items.Clear();
 
-            var pendingStudents = adminViewModelService.GetAllPendingStudents().ToList();
+            var pendingStudents = _adminViewModelService.GetAllPendingStudents().ToList();
 
             if (pendingStudents != null)
             {
@@ -59,7 +59,7 @@ namespace ID_Replacement
                 }
             }
 
-            var completedStudents = adminViewModelService.GetAllCompletedStudents().ToList();
+            var completedStudents = _adminViewModelService.GetAllCompletedStudents().ToList();
 
             if (completedStudents != null)
             {

@@ -133,9 +133,17 @@
 
             calendar = new MonthCalendar
             {
-                Location = new Point(0, 0),
-                Name = "calendar"
+                Location = new Point(20, 20),
+                Name = "calendar",
+                MinDate = DateTime.Today,
+                MaxSelectionCount = 1
             };
+
+            // Fetch overbooked dates and disable them
+            DisableOverbookedDates();
+
+            // Prevent selecting overbooked dates
+            calendar.DateSelected += Calendar_DateSelected;
 
             requestTab.Controls.Add(submitButton);
             requestTab.Controls.Add(reasonTextBox);
@@ -151,6 +159,8 @@
             ClientSize = new Size(800, 450);
             Controls.Add(tabControl1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "MainFrame";
             Text = "MainFrame";
         }
