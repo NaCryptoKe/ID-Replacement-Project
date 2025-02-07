@@ -1,13 +1,10 @@
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Diagnostics;
-using System.IO;
-using ID_Replacement.Data.Repositories.Interface;
-using ID_Replacement.Data.Repositories.Class;
-using ID_Replacement.Services.Class;
 using ID_Replacement.Services.Interface;
 using ID_Replacement.Data.Models;
+using ID_Replacement.Services.Class;
+using ID_Replacement.Data.Repositories.Interface;
+using ID_Replacement.Services;
+using ID_Replacement.Data.Repositories.Class;
 
 namespace ID_Replacement
 {
@@ -15,6 +12,8 @@ namespace ID_Replacement
     {
         private IAdminViewModelRepository _adminViewModelRepository;
         private IAdminViewModelService _adminViewModelService;
+        private ITransactionLogRepository _transactionLogRepository;
+        private ITransactionLogService _transactionLogService;
 
         public AdminForm(IAdminViewModelRepository adminViewModelRepository)
         {
@@ -36,10 +35,10 @@ namespace ID_Replacement
             };
 
             listView.Columns.Add("Full Name", 150);
-            listView.Columns.Add("Student ID", 100);
-            listView.Columns.Add("Appointment Date", 120);
-            listView.Columns.Add("Status", 100);
-            listView.Columns.Add("Remarks", 200);
+            listView.Columns.Add("Student ID", 150);
+            listView.Columns.Add("Appointment Date", 150);
+            listView.Columns.Add("Status", 150);
+            listView.Columns.Add("Remarks", 400);
 
             return listView;
         }
@@ -86,24 +85,133 @@ namespace ID_Replacement
 
         private void SetupEventHandlers()
         {
+            _transactionLogRepository = new TransactionLogRepository();
+            _transactionLogService = new TransactionLogService(_transactionLogRepository);
+
             pendingListView.ItemSelectionChanged += ListView_ItemSelectionChanged;
             completedListView.ItemSelectionChanged += ListView_ItemSelectionChanged;
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
-            viewButton.Click += (s, e) =>
+
+            transactionButton.Click += (s, e) =>
             {
-                if (viewButton.Tag is AdminViewModel request && !string.IsNullOrEmpty(request.FilePath))
+                try
                 {
-                    if (File.Exists(request.FilePath))
+                    // Ensure directory exists
+                    string folderPath = @"D:\ID_Replacement\Transaction";
+                    if (!Directory.Exists(folderPath))
                     {
-                        Console.WriteLine("Test");
+                        Directory.CreateDirectory(folderPath);
                     }
-                    else
+
+                    // Generate file name with timestamp
+                    string fileName = $"Transaction_{DateTime.Now:dd_MM_yyyy_HH_mm_ss_fff}.txt";
+                    string filePath = Path.Combine(folderPath, fileName);
+
+                    // Ensure the file is not locked
+                    if (File.Exists(filePath))
                     {
-                        MessageBox.Show("File not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        try
+                        {
+                            File.Delete(filePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Could not delete existing file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                     }
+
+                    // Open the file for writing
+                    using (StreamWriter writer = new StreamWriter(filePath))
+                    {
+                        // Write the title
+                        writer.WriteLine("Transaction Report");
+                        writer.WriteLine($"Generated on: {DateTime.Now:dd_MM_yyyy_HH_mm_ss_fff}");
+                        writer.WriteLine(new string('-', 50)); // Adds a separator
+
+                        // Fetch transaction logs
+                        var logs = _transactionLogService.GetLogs();
+                        if (logs == null)
+                        {
+                            MessageBox.Show("Transaction logs are NULL!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        if (!logs.Any())
+                        {
+                            writer.WriteLine("No transaction logs available!");
+                        }
+                        else
+                        {
+                            // Write column headers
+                            writer.WriteLine("Log ID | Table Name | Operation | Date | User ID");
+                            writer.WriteLine(new string('-', 50)); // Adds a separator
+
+                            foreach (var log in logs)
+                            {
+                                writer.WriteLine($"{log.LogID?.ToString() ?? "N/A"} | " +
+                                                 $"{log.TableName ?? "N/A"} | " +
+                                                 $"{log.Operation ?? "N/A"} | " +
+                                                 $"{log.ChangeDate?.ToString("dd-MM-yyyy HH:mm") ?? "N/A"} | " +
+                                                 $"{log.UserID ?? "N/A"}");
+                            }
+                        }
+                    }
+
+                    MessageBox.Show($"Transaction report saved: {filePath}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show($"File access error: {ex.Message}. Ensure the file is not open elsewhere.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error creating text file: {ex.Message}\n\nDetails: {ex.InnerException?.Message ?? "No additional details"}",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Console.WriteLine($"Error creating text file: {ex.Message}\n\nDetails: {ex.InnerException?.Message ?? "No additional details"}");
                 }
             };
+
+
+
+
+            viewButton.Click += (s, e) =>
+            {
+                if (viewButton.Tag is AdminViewModel request)
+                {
+                    if (string.IsNullOrEmpty(request.FilePath))
+                    {
+                        MessageBox.Show("No file associated with this request.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    if (!File.Exists(request.FilePath))
+                    {
+                        MessageBox.Show("File not found: " + request.FilePath, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    try
+                    {
+                        ProcessStartInfo psi = new ProcessStartInfo
+                        {
+                            FileName = request.FilePath,
+                            UseShellExecute = true
+                        };
+                        Process.Start(psi);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Failed to open file: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No request selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            };
+
 
             acceptButton.Click += (s, e) =>
             {

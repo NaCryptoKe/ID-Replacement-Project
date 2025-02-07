@@ -16,6 +16,7 @@ namespace ID_Replacement
         private ListView completedListView;
         private Panel detailsPanel;
         private Label detailsLabel;
+        private Button transactionButton;
         private Button viewButton;
         private Button acceptButton;
         private Button denyButton;
@@ -69,6 +70,15 @@ namespace ID_Replacement
                 Height = 90
             };
 
+            transactionButton = new Button
+            {
+                Text = "Print Report",
+                Width = 100,
+                Location = new Point(340, 50),
+                BackColor = Color.Black,
+                ForeColor = Color.White
+            };
+
             viewButton = new Button
             {
                 Text = "View File",
@@ -107,13 +117,15 @@ namespace ID_Replacement
                 Visible = false
             };
 
-            buttonPanel.Controls.AddRange(new Control[] { viewButton, acceptButton, denyButton, deleteButton });
+            buttonPanel.Controls.AddRange(new Control[] { viewButton, acceptButton, denyButton, deleteButton, transactionButton});
             detailsPanel.Controls.AddRange(new Control[] { detailsLabel, buttonPanel });
 
             mainPanel.Controls.Add(tabControl, 0, 0);
             mainPanel.Controls.Add(detailsPanel, 0, 1);
 
-            this.Controls.Add(mainPanel);
+            Controls.Add(mainPanel);
+            MaximizeBox = false;
+            MinimizeBox = false;
 
             SetupEventHandlers();
         }

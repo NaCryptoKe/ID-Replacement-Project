@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using ID_Replacement.Data;
 using ID_Replacement.Data.Models;
+using ID_Replacement.Data.Repositories.Class;
 using ID_Replacement.Data.Repositories.Interface;
 using ID_Replacement.Service.Interface;
 using ID_Replacement.Services.Class;
@@ -19,11 +20,11 @@ namespace ID_Replacement
         int maxDays = 365; // Limit search to 1 year
         int daysChecked = 0;
 
-        public MainFrame(Student student, IHistoryRepository historyRepository)
+        public MainFrame(Student student)
         {
             InitializeComponent();
             _loggedInStudent = student;
-            _historyRepository = historyRepository;
+            _historyRepository = new HistoryRepository();
             _historyService = new HistoryService(_historyRepository);
             LoadRequests();
         }
@@ -39,9 +40,9 @@ namespace ID_Replacement
                 MultiSelect = false
             };
 
-            listView.Columns.Add("Submitted Date", 200);
-            listView.Columns.Add("Appointment Date", 200);
-            listView.Columns.Add("Status", 300);
+            listView.Columns.Add("Submitted Date", 260);
+            listView.Columns.Add("Appointment Date", 260);
+            listView.Columns.Add("Status", 260);
 
             return listView;
         }
@@ -116,10 +117,64 @@ namespace ID_Replacement
                 return;
             }
 
+            using (var connection = DatabaseContext.Instance.GetConnection())
+            {
+                connection.Open();
+
+                // Check if a pending request already exists for this student
+                var checkQuery = "SELECT COUNT(*) FROM IDRequests WHERE StudentID = @StudentID AND Status = 'Pending'";
+                using (var checkCommand = new SqlCommand(checkQuery, connection))
+                {
+                    checkCommand.Parameters.AddWithValue("@StudentID", _loggedInStudent.StudentID);
+                    int pendingCount = (int)checkCommand.ExecuteScalar();
+
+                    // If a pending request exists, show the message and exit
+                    if (pendingCount > 0)
+                    {
+                        MessageBox.Show("You already have a pending request.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return; // Exit the method to prevent further submission
+                    }
+                }
+
+                // If no pending request exists, proceed with the submission
+                var query = @"
+            DECLARE @RequestID INT;
+
+            -- Insert into IDRequests and get the generated RequestID
+            INSERT INTO IDRequests (StudentID, Status, Remark) 
+            VALUES (@StudentID, @Status, @Remark);
+
+            -- Retrieve the RequestID from the last inserted row
+            SET @RequestID = SCOPE_IDENTITY();
+
+            -- Insert into Documents
+            INSERT INTO Documents (RequestID, DocumentPath) 
+            VALUES (@RequestID, @DocumentPath);
+
+            -- Insert into Appointments
+            INSERT INTO Appointments (RequestID, AppointmentDate) 
+            VALUES (@RequestID, @AppointmentDate);";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@StudentID", _loggedInStudent.StudentID);
+                    command.Parameters.AddWithValue("@Status", "Pending");
+                    command.Parameters.AddWithValue("@Remark", reasonTextBox.Text);
+                    command.Parameters.AddWithValue("@DocumentPath", selectedFilePath);
+                    command.Parameters.AddWithValue("@AppointmentDate", selectedDate);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+
             // Display preview of entered details
             string previewMessage = $"Document: {selectedFilePath}\nReason: {reasonTextBox.Text}\nDate: {selectedDate.ToShortDateString()}";
             MessageBox.Show(previewMessage, "Submission Preview", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Reload the list of requests to reflect the new state
+            LoadRequests();
         }
+
 
         private void DisableOverbookedDates()
         {

@@ -13,19 +13,9 @@ namespace ID_Replacement.Services
             _repository = repository;
         }
 
-        public TransactionLog GetLogById(int logId)
+        public IEnumerable<TransactionLog> GetLogs()
         {
-            return _repository.GetLogById(logId);
-        }
-
-        public IEnumerable<TransactionLog> GetLogsByTableName(string tableName)
-        {
-            return _repository.GetLogsByTableName(tableName);
-        }
-
-        public void LogTransaction(TransactionLog log)
-        {
-            _repository.AddLog(log);
+            return _repository.GetLogs();
         }
     }
 }

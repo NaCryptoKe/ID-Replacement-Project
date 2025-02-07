@@ -1,0 +1,6 @@
+Transaction Report
+Generated on: 07_02_2025_15_27_27_769
+--------------------------------------------------
+Log ID | Table Name | Operation | Date | User ID
+--------------------------------------------------
+1 | TestTable | INSERT | 07-02-2025 14:13 | admin

@@ -8,7 +8,6 @@ namespace ID_Replacement
     public partial class LoginForm : Form
     {
         private readonly IStudentService _studentService;
-        private IHistoryRepository _historyRepository;
 
         public LoginForm(IStudentService studentService)
         {
@@ -29,7 +28,7 @@ namespace ID_Replacement
                     if (student != null)
                     {
                         this.Hide();
-                        new MainFrame(student, _historyRepository).ShowDialog(); // Pass student object
+                        new MainFrame(student).ShowDialog(); // Pass student object
                         this.Close();
                     }
                     else

@@ -19,8 +19,8 @@ CREATE TABLE IDRequests (
     RequestID INT IDENTITY PRIMARY KEY,
     StudentID VARCHAR(10) FOREIGN KEY REFERENCES Students(StudentID), -- Fixed to match Students.StudentID
     RequestDate DATETIME DEFAULT GETDATE(),
-    Status NVARCHAR(20) CHECK (Status IN ('Pending', 'Approved', 'Rejected', 'Completed')),
-    NotificationSent BIT DEFAULT 0
+    Status NVARCHAR(20) CHECK (Status IN ('Pending', 'Approved', 'Rejected')),
+    Remark NVARCHAR(MAX)
 );
 
 CREATE TABLE Documents (
@@ -54,7 +54,9 @@ SELECT
     a.AppointmentDate,
 	ir.Status,
     ir.RequestID,
-    d.DocumentID
+    d.DocumentPath,
+	ir.RequestDate,
+	ir.Remark
 FROM Students s
 JOIN IDRequests ir ON s.StudentID = ir.StudentID
 JOIN Documents d ON ir.RequestID = d.RequestID

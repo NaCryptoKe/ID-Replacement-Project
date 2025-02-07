@@ -25,7 +25,8 @@ namespace ID_Replacement.Data.Repositories.Class
                             FullName = reader.IsDBNull(reader.GetOrdinal("FullName")) ? string.Empty : reader.GetString(reader.GetOrdinal("FullName")),
                             AppointmentDate = reader.IsDBNull(reader.GetOrdinal("AppointmentDate")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("AppointmentDate")),
                             Status = reader.IsDBNull(reader.GetOrdinal("Status")) ? string.Empty : reader.GetString(reader.GetOrdinal("Status")),
-                            FilePath = reader.IsDBNull(reader.GetOrdinal("DocumentPath")) ? string.Empty : reader.GetString(reader.GetOrdinal("DocumentPath"))
+                            FilePath = reader.IsDBNull(reader.GetOrdinal("DocumentPath")) ? string.Empty : reader.GetString(reader.GetOrdinal("DocumentPath")),
+                            Remarks = reader.IsDBNull(reader.GetOrdinal("Remark")) ? string.Empty : reader.GetString(reader.GetOrdinal("Remark"))
                         });
 
                     }
@@ -52,7 +53,8 @@ namespace ID_Replacement.Data.Repositories.Class
                             FullName = reader.IsDBNull(reader.GetOrdinal("FullName")) ? string.Empty : reader.GetString(reader.GetOrdinal("FullName")),
                             AppointmentDate = reader.IsDBNull(reader.GetOrdinal("AppointmentDate")) ? (DateTime?)null: reader.GetDateTime(reader.GetOrdinal("AppointmentDate")),
                             Status = reader.IsDBNull(reader.GetOrdinal("Status")) ? string.Empty : reader.GetString(reader.GetOrdinal("Status")),
-                            FilePath = reader.IsDBNull(reader.GetOrdinal("DocumentPath")) ? string.Empty : reader.GetString(reader.GetOrdinal("DocumentPath"))
+                            FilePath = reader.IsDBNull(reader.GetOrdinal("DocumentPath")) ? string.Empty : reader.GetString(reader.GetOrdinal("DocumentPath")),
+                            Remarks = reader.IsDBNull(reader.GetOrdinal("Remark")) ? string.Empty : reader.GetString(reader.GetOrdinal("Remark"))
                         });
                     }
 
