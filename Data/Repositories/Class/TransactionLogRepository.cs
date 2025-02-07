@@ -19,24 +19,24 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-                var query = "SELECT LogID, TableName, Operation, ChangeDate, Details, UserID FROM TransactionLogs";
-
-                using (var command = new SqlCommand(query, connection))
+                var command = new SqlCommand("GetTransactionLogs", connection)
                 {
-                    using (var reader = command.ExecuteReader())
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        logs.Add(new TransactionLog
                         {
-                            logs.Add(new TransactionLog
-                            {
-                                LogID = reader.GetInt32(0),
-                                TableName = reader.GetString(1),
-                                Operation = reader.GetString(2),
-                                ChangeDate = reader.GetDateTime(3),
-                                Details = reader.IsDBNull(4) ? null : reader.GetString(4),
-                                UserID = reader.IsDBNull(5) ? null : reader.GetString(5)
-                            });
-                        }
+                            LogID = reader.GetInt32(0),
+                            TableName = reader.GetString(1),
+                            Operation = reader.GetString(2),
+                            ChangeDate = reader.GetDateTime(3),
+                            Details = reader.IsDBNull(4) ? null : reader.GetString(4),
+                            UserID = reader.IsDBNull(5) ? null : reader.GetString(5)
+                        });
                     }
                 }
             }

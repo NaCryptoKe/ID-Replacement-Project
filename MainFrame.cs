@@ -122,7 +122,7 @@ namespace ID_Replacement
                 connection.Open();
 
                 // Check if a pending request already exists for this student
-                var checkQuery = "SELECT COUNT(*) FROM IDRequests WHERE StudentID = @StudentID AND Status = 'Pending'";
+                var checkQuery = "EXEC CheckPendingRequest @StudentID"; // Stored Procedure call
                 using (var checkCommand = new SqlCommand(checkQuery, connection))
                 {
                     checkCommand.Parameters.AddWithValue("@StudentID", _loggedInStudent.StudentID);
@@ -140,20 +140,14 @@ namespace ID_Replacement
                 var query = @"
             DECLARE @RequestID INT;
 
-            -- Insert into IDRequests and get the generated RequestID
-            INSERT INTO IDRequests (StudentID, Status, Remark) 
-            VALUES (@StudentID, @Status, @Remark);
-
-            -- Retrieve the RequestID from the last inserted row
-            SET @RequestID = SCOPE_IDENTITY();
+            -- Call stored procedure to insert into IDRequests and get the generated RequestID
+            EXEC InsertIDRequest @StudentID, @Status, @Remark, @RequestID OUT;
 
             -- Insert into Documents
-            INSERT INTO Documents (RequestID, DocumentPath) 
-            VALUES (@RequestID, @DocumentPath);
+            EXEC InsertDocument @RequestID, @DocumentPath;
 
             -- Insert into Appointments
-            INSERT INTO Appointments (RequestID, AppointmentDate) 
-            VALUES (@RequestID, @AppointmentDate);";
+            EXEC InsertAppointment @RequestID, @AppointmentDate;";
 
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -174,7 +168,6 @@ namespace ID_Replacement
             // Reload the list of requests to reflect the new state
             LoadRequests();
         }
-
 
         private void DisableOverbookedDates()
         {
@@ -197,7 +190,7 @@ namespace ID_Replacement
                 using (var connection = DatabaseContext.Instance.GetConnection())
                 {
                     connection.Open();
-                    string query = @"SELECT OverbookedDate FROM dbo.GetOverbookedDates()";
+                    string query = "EXEC GetOverbookedDates"; // Stored Procedure call
 
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
@@ -253,7 +246,7 @@ namespace ID_Replacement
                 MessageBox.Show("This date falls on a weekend. Please select another date.");
                 calendar.SelectionStart = GetNextAvailableAppointment();
             }
-            
+
             if (overbookedDates.Contains(e.Start))
             {
                 MessageBox.Show("This date is fully booked. Please select another date.");

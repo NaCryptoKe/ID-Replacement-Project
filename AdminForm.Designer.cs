@@ -20,7 +20,6 @@ namespace ID_Replacement
         private Button viewButton;
         private Button acceptButton;
         private Button denyButton;
-        private Button deleteButton;
         private Panel buttonPanel;
         private void SetupUI()
         {
@@ -107,17 +106,7 @@ namespace ID_Replacement
                 Enabled = false
             };
 
-            deleteButton = new Button
-            {
-                Text = "Delete",
-                Width = 100,
-                Location = new Point(120, 50),
-                BackColor = Color.Red,
-                Enabled = false,
-                Visible = false
-            };
-
-            buttonPanel.Controls.AddRange(new Control[] { viewButton, acceptButton, denyButton, deleteButton, transactionButton});
+            buttonPanel.Controls.AddRange(new Control[] { viewButton, acceptButton, denyButton, transactionButton});
             detailsPanel.Controls.AddRange(new Control[] { detailsLabel, buttonPanel });
 
             mainPanel.Controls.Add(tabControl, 0, 0);

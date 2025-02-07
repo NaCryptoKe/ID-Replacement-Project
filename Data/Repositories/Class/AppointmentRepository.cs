@@ -17,7 +17,7 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-                var query = "SELECT AppointmentID, RequestID, AppointmentDate FROM Appointments WHERE AppointmentID = @AppointmentID";
+                var query = "EXEC GetAppointmentById @AppointmentID"; // Call the procedure
 
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -50,7 +50,7 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-                var query = "SELECT AppointmentID, RequestID, AppointmentDate FROM Appointments WHERE RequestID = @RequestID";
+                var query = "EXEC GetAppointmentsByRequestId @RequestID"; // Call the procedure
 
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -82,9 +82,7 @@ namespace ID_Replacement.Data.Repositories.Class
             {
                 connection.Open();
 
-                var query = @"INSERT INTO Appointments (RequestID, AppointmentDate) 
-                              VALUES (@RequestID, @AppointmentDate);
-                              SELECT SCOPE_IDENTITY();"; // Returns the new AppointmentID
+                var query = "EXEC AddAppointment @RequestID, @AppointmentDate, @AppointmentID OUTPUT"; // Call the procedure
 
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -97,15 +95,13 @@ namespace ID_Replacement.Data.Repositories.Class
                     command.Parameters.AddWithValue("@RequestID", appointment.RequestID);
                     command.Parameters.AddWithValue("@AppointmentDate", appointment.AppointmentDate);
 
-                    var result = command.ExecuteScalar();
-                    if (result != null)
-                    {
-                        appointment.AppointmentID = Convert.ToInt32(result);
-                    }
-                    else
-                    {
-                        throw new Exception("Failed to insert appointment.");
-                    }
+                    // Output parameter for AppointmentID
+                    var appointmentIdParameter = new SqlParameter("@AppointmentID", System.Data.SqlDbType.Int) { Direction = System.Data.ParameterDirection.Output };
+                    command.Parameters.Add(appointmentIdParameter);
+
+                    command.ExecuteNonQuery();
+
+                    appointment.AppointmentID = Convert.ToInt32(appointmentIdParameter.Value);
                 }
             }
         }
@@ -118,7 +114,7 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-                var query = "UPDATE Appointments SET AppointmentDate = @NewDate WHERE AppointmentID = @AppointmentID";
+                var query = "EXEC UpdateAppointmentDate @AppointmentID, @NewDate"; // Call the procedure
 
                 using (var command = new SqlCommand(query, connection))
                 {

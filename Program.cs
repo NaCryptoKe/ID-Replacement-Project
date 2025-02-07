@@ -30,8 +30,8 @@ namespace ID_Replacement
             student.StudentID = "1";
 
             // Start the AdminView Form with dependencies
-            //Application.Run(new AdminForm(adminViewModelRepository));
-            Application.Run(new LoginForm(studentService));
+            Application.Run(new AdminForm(adminViewModelRepository));
+            //Application.Run(new LoginForm(studentService));
         }
     }
 }

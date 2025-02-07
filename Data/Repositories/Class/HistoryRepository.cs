@@ -1,6 +1,8 @@
 ﻿using ID_Replacement.Data.Models;
 using ID_Replacement.Data.Repositories.Interface;
 using Microsoft.Data.SqlClient;
+using System;
+using System.Collections.Generic;
 
 namespace ID_Replacement.Data.Repositories.Class
 {
@@ -13,10 +15,12 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-                var query = @"Select * from RequestAppointmentStatus where StudentID = @studentID";
+                var query = "EXEC GetRequestsWithAppointmentByStudentId @StudentID";  // Call the procedure
+
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@studentID", studentID);
+                    command.Parameters.AddWithValue("@StudentID", studentID); // Add the parameter
+
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -31,8 +35,9 @@ namespace ID_Replacement.Data.Repositories.Class
                         }
                     }
                 }
-                return history;
             }
+
+            return history;
         }
     }
 }

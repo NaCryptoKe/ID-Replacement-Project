@@ -46,238 +46,245 @@ CREATE TABLE TransactionLogs (
 );
 GO
 
--- View
-CREATE VIEW StudentAppointments AS
-SELECT 
-    s.FullName,
-    s.StudentID,
-    a.AppointmentDate,
-	ir.Status,
-    ir.RequestID,
-    d.DocumentPath,
-	ir.RequestDate,
-	ir.Remark
-FROM Students s
-JOIN IDRequests ir ON s.StudentID = ir.StudentID
-JOIN Documents d ON ir.RequestID = d.RequestID
-JOIN Appointments a ON ir.RequestID = a.RequestID;
-GO
-
-CREATE VIEW RequestAppointmentStatus AS
-SELECT 
-    S.StudentID,
-    IR.RequestDate,
-    A.AppointmentDate,
-    IR.Status
-FROM 
-    IDRequests IR
-JOIN 
-    Appointments A
-    ON IR.RequestID = A.RequestID
-JOIN 
-    Students S
-    ON IR.StudentID = S.StudentID;
-GO
-
-
--- 3. Function (Created BEFORE stored procedures that reference it)
-CREATE FUNCTION dbo.GetOverbookedDates()
-RETURNS TABLE
-AS
-RETURN
-(
-    SELECT DISTINCT CAST(AppointmentDate AS DATE) AS OverbookedDate
-    FROM Appointments
-    GROUP BY CAST(AppointmentDate AS DATE)
-    HAVING COUNT(*) >= 5 -- Change 5 to your MaxAppointments limit
-);
-GO
-
--- 4. Stored Procedures
-CREATE PROCEDURE AddIDRequest
-    @StudentID VARCHAR(10),
-    @Status NVARCHAR(20)
+--Procedure and functions
+CREATE PROCEDURE GetTransactionLogs
 AS
 BEGIN
-    BEGIN TRY
-        IF NOT EXISTS (SELECT 1 FROM Students WHERE StudentID = @StudentID)
-        BEGIN
-            RAISERROR ('StudentID does not exist.', 16, 1);
-            RETURN;
-        END
-        INSERT INTO IDRequests (StudentID, Status) VALUES (@StudentID, @Status);
-        SELECT SCOPE_IDENTITY() AS NewRequestID;
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END;
+    SELECT LogID, TableName, Operation, ChangeDate, Details, UserID 
+    FROM TransactionLogs;
+END
 GO
 
+CREATE PROCEDURE GetStudentById
+    @Identifier NVARCHAR(50)
+AS
+BEGIN
+    SELECT StudentID, FullName, Email, Department, Year, Password 
+    FROM Students 
+    WHERE StudentID = @Identifier OR Email = @Identifier;
+END
+GO
+
+CREATE PROCEDURE ValidateCredentials
+    @Username NVARCHAR(50),
+    @Password NVARCHAR(50)
+AS
+BEGIN
+    SELECT StudentID 
+    FROM Students 
+    WHERE (Email = @Username OR StudentID = @Username) 
+    AND Password = @Password;
+END
+GO
+
+CREATE PROCEDURE GetRequestById
+    @RequestID INT
+AS
+BEGIN
+    SELECT RequestID, StudentID, RequestDate, Status, Remark 
+    FROM IDRequests 
+    WHERE RequestID = @RequestID;
+END
+GO
+
+CREATE PROCEDURE GetRequestsByStudentId
+    @StudentID NVARCHAR(50)
+AS
+BEGIN
+    SELECT RequestID, StudentID, RequestDate, Status, Remark 
+    FROM IDRequests 
+    WHERE StudentID = @StudentID;
+END
+GO
+
+CREATE PROCEDURE AddRequest
+    @StudentID NVARCHAR(50),
+    @Status NVARCHAR(50),
+    @RequestID INT OUTPUT
+AS
+BEGIN
+    INSERT INTO IDRequests (StudentID, Status) 
+    VALUES (@StudentID, @Status);
+
+    SET @RequestID = SCOPE_IDENTITY();
+END
+GO
+
+CREATE PROCEDURE UpdateRequestStatus
+    @RequestID INT,
+    @Status NVARCHAR(50)
+AS
+BEGIN
+    UPDATE IDRequests 
+    SET Status = @Status 
+    WHERE RequestID = @RequestID;
+END
+GO
+
+CREATE PROCEDURE GetRequestsWithAppointmentByStudentId
+    @StudentID NVARCHAR(50)
+AS
+BEGIN
+    SELECT 
+        S.StudentID,
+        IR.RequestDate,
+        A.AppointmentDate,
+        IR.Status
+    FROM 
+        IDRequests IR
+    JOIN 
+        Appointments A ON IR.RequestID = A.RequestID
+    JOIN 
+        Students S ON IR.StudentID = S.StudentID
+    WHERE 
+        IR.StudentID = @StudentID;
+END
+GO
+-- GetDocumentById Procedure
+CREATE PROCEDURE GetDocumentById
+    @DocumentID INT
+AS
+BEGIN
+    SELECT DocumentID, RequestID, DocumentPath, UploadDate 
+    FROM Documents 
+    WHERE DocumentID = @DocumentID;
+END
+GO
+
+-- GetDocumentsByRequestId Procedure
+CREATE PROCEDURE GetDocumentsByRequestId
+    @RequestID INT
+AS
+BEGIN
+    SELECT DocumentID, RequestID, DocumentPath, UploadDate 
+    FROM Documents 
+    WHERE RequestID = @RequestID;
+END
+GO
+
+-- AddDocument Procedure
 CREATE PROCEDURE AddDocument
     @RequestID INT,
-    @DocumentPath NVARCHAR(255)
+    @DocumentPath NVARCHAR(255),
+    @DocumentID INT OUTPUT
 AS
 BEGIN
-    BEGIN TRY
-        IF NOT EXISTS (SELECT 1 FROM IDRequests WHERE RequestID = @RequestID)
-        BEGIN
-            RAISERROR ('RequestID does not exist.', 16, 1);
-            RETURN;
-        END
-        INSERT INTO Documents (RequestID, DocumentPath) VALUES (@RequestID, @DocumentPath);
-        UPDATE IDRequests SET Status = 'Approved' WHERE RequestID = @RequestID;
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END;
+    INSERT INTO Documents (RequestID, DocumentPath) 
+    VALUES (@RequestID, @DocumentPath);
+
+    SET @DocumentID = SCOPE_IDENTITY();
+END
+GO
+-- GetAppointmentById Procedure
+CREATE PROCEDURE GetAppointmentById
+    @AppointmentID INT
+AS
+BEGIN
+    SELECT AppointmentID, RequestID, AppointmentDate 
+    FROM Appointments 
+    WHERE AppointmentID = @AppointmentID;
+END
 GO
 
-CREATE PROCEDURE ScheduleAppointment
+-- GetAppointmentsByRequestId Procedure
+CREATE PROCEDURE GetAppointmentsByRequestId
+    @RequestID INT
+AS
+BEGIN
+    SELECT AppointmentID, RequestID, AppointmentDate 
+    FROM Appointments 
+    WHERE RequestID = @RequestID;
+END
+GO
+
+-- AddAppointment Procedure
+CREATE PROCEDURE AddAppointment
     @RequestID INT,
-    @AppointmentDate DATETIME = NULL
+    @AppointmentDate DATETIME,
+    @AppointmentID INT OUTPUT
 AS
 BEGIN
-    BEGIN TRY
-        IF NOT EXISTS (SELECT 1 FROM IDRequests WHERE RequestID = @RequestID)
-        BEGIN
-            RAISERROR ('RequestID does not exist.', 16, 1);
-            RETURN;
-        END
-        IF @AppointmentDate IS NULL
-        BEGIN
-            SET @AppointmentDate = dbo.GetNextAvailableAppointment();
-        END
-        IF (SELECT COUNT(*) FROM Appointments 
-            WHERE CAST(AppointmentDate AS DATE) = CAST(@AppointmentDate AS DATE)) >= 5
-        BEGIN
-            SET @AppointmentDate = dbo.GetNextAvailableAppointment();
-        END
-        INSERT INTO Appointments (RequestID, AppointmentDate) VALUES (@RequestID, @AppointmentDate);
-        UPDATE IDRequests SET Status = 'Completed' WHERE RequestID = @RequestID;
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END;
+    INSERT INTO Appointments (RequestID, AppointmentDate) 
+    VALUES (@RequestID, @AppointmentDate);
+
+    SET @AppointmentID = SCOPE_IDENTITY();
+END
 GO
 
--- 5. Triggers
-CREATE TRIGGER LogInsert
-ON IDRequests
-AFTER INSERT
+-- UpdateAppointmentDate Procedure
+CREATE PROCEDURE UpdateAppointmentDate
+    @AppointmentID INT,
+    @NewDate DATETIME
 AS
 BEGIN
-    INSERT INTO TransactionLogs (TableName, Operation, Details, UserID)
-    SELECT 'IDRequests', 'INSERT', 
-           CONCAT('RequestID: ', INSERTED.RequestID, ', Status: ', INSERTED.Status), 
-           SYSTEM_USER
-    FROM INSERTED;
-END;
+    UPDATE Appointments 
+    SET AppointmentDate = @NewDate 
+    WHERE AppointmentID = @AppointmentID;
+END
 GO
 
-CREATE TRIGGER LogUpdateDelete
-ON IDRequests
-AFTER UPDATE, DELETE
+-- GetAllPendingStudents Procedure
+CREATE PROCEDURE GetAllPendingStudents
 AS
 BEGIN
-    IF EXISTS (SELECT 1 FROM DELETED)
-    BEGIN
-        INSERT INTO TransactionLogs (TableName, Operation, Details, UserID)
-        SELECT 'IDRequests', 'DELETE', 
-               CONCAT('Deleted RequestID: ', DELETED.RequestID), 
-               SYSTEM_USER
-        FROM DELETED;
-    END
-    IF EXISTS (SELECT 1 FROM INSERTED)
-    BEGIN
-        INSERT INTO TransactionLogs (TableName, Operation, Details, UserID)
-        SELECT 'IDRequests', 'UPDATE', 
-               CONCAT('Updated RequestID: ', INSERTED.RequestID, ', New Status: ', INSERTED.Status), 
-               SYSTEM_USER
-        FROM INSERTED;
-    END
-END;
+    SELECT r.RequestID, s.StudentID, s.FullName, a.AppointmentDate, r.Status, d.DocumentPath, r.Remark
+    FROM IDRequests r
+    INNER JOIN Students s ON r.StudentID = s.StudentID
+    LEFT JOIN Appointments a ON r.RequestID = a.RequestID
+    LEFT JOIN Documents d ON r.RequestID = d.RequestID
+    WHERE r.Status = 'Pending'
+    ORDER BY a.AppointmentDate;
+END
 GO
 
-CREATE TRIGGER NotifyOnCompletion
-ON IDRequests
-AFTER UPDATE
+-- GetAllCompletedStudents Procedure
+CREATE PROCEDURE GetAllCompletedStudents
 AS
 BEGIN
-    UPDATE IDRequests
-    SET NotificationSent = 0
-    WHERE Status = 'Completed' AND NotificationSent = 0;
-END;
+    SELECT r.RequestID, s.StudentID, s.FullName, a.AppointmentDate, r.Status, d.DocumentPath, r.Remark
+    FROM IDRequests r
+    INNER JOIN Students s ON r.StudentID = s.StudentID
+    LEFT JOIN Appointments a ON r.RequestID = a.RequestID
+    LEFT JOIN Documents d ON r.RequestID = d.RequestID
+    WHERE r.Status != 'Pending'
+    ORDER BY r.RequestDate DESC;
+END
 GO
 
-CREATE TRIGGER PreventDuplicateLogs
-ON TransactionLogs
-AFTER INSERT
-AS
-BEGIN
-    DELETE FROM TransactionLogs
-    WHERE LogID IN (
-        SELECT LogID
-        FROM (
-            SELECT LogID, 
-                   ROW_NUMBER() OVER (PARTITION BY TableName, Details, Operation ORDER BY ChangeDate DESC) AS RowNum
-            FROM TransactionLogs
-        ) Temp
-        WHERE RowNum > 1
-    );
-END;
-GO
-
--- 6. Notification Procedures
-CREATE PROCEDURE GetPendingNotifications
-AS
-BEGIN
-    SELECT
-        R.RequestID,
-        S.FullName,
-        S.Email
-    FROM IDRequests R
-    JOIN Students S ON R.StudentID = S.StudentID
-    WHERE R.Status = 'Completed' AND R.NotificationSent = 0;
-END;
-GO
-
-CREATE PROCEDURE MarkNotificationSent
+-- AcceptRequest Procedure
+CREATE PROCEDURE AcceptRequest
     @RequestID INT
 AS
 BEGIN
     UPDATE IDRequests
-    SET NotificationSent = 1
+    SET Status = 'Approved'
     WHERE RequestID = @RequestID;
+END
+GO
+
+-- DenyRequest Procedure
+CREATE PROCEDURE DenyRequest
+    @RequestID INT
+AS
+BEGIN
+    UPDATE IDRequests
+    SET Status = 'Rejected'
+    WHERE RequestID = @RequestID;
+END
+GO
+CREATE PROCEDURE CheckPendingRequest
+    @StudentID INT
+AS
+BEGIN
+    -- Declare a variable to store the count of pending requests
+    DECLARE @PendingCount INT;
+
+    -- Check the count of pending requests for the student
+    SELECT @PendingCount = COUNT(*)
+    FROM IDRequests
+    WHERE StudentID = @StudentID AND Status = 'Pending';
+
+    -- Return the count of pending requests
+    SELECT @PendingCount AS PendingCount;
 END;
-GO
-
--- 7. Test Data (Adjusted StudentID values to strings)
-INSERT INTO Students (StudentID, FullName, Department, Year, Email)
-VALUES 
-('1', 'John Doe', 'Computer Science', 3, 'john.doe@gmail.com'),
-('2', 'Jane Smith', 'Computer Science', 2, 'jane.smith@gmail.com'),
-('3', 'George Smith', 'Engineering', 2, 'george.smith@gmail.com'),
-('4', 'Gordon Smith', 'Engineering', 2, 'gordan.smith@yahoo.com'),
-('5', 'Jon Doo', 'Computer Science', 3, 'jon.doe@hotmail.com'),
-('6', 'Lemar Odem', 'Engineering', 1, 'odem.lemar@yahoo.com');
-GO
-
--- Test Workflow
-EXEC AddIDRequest @StudentID = '6', @Status = 'Pending'; -- Use string for StudentID
-EXEC AddDocument @RequestID = 1, @DocumentPath = 'c:/file/document.pdf'; -- RequestID 1 is auto-generated
-
-DECLARE @NextSlot DATETIME = dbo.GetNextAvailableAppointment();
-EXEC ScheduleAppointment @RequestID = 1, @AppointmentDate = @NextSlot;
-
--- Verify results
-SELECT * FROM Students;
-SELECT * FROM Documents;
-SELECT * FROM IDRequests;
-SELECT * FROM Appointments;
-SELECT * FROM TransactionLogs;
-EXEC GetPendingNotifications;
-EXEC MarkNotificationSent @RequestID = 1; -- Corrected RequestID
 GO

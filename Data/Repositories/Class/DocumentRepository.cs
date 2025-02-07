@@ -17,7 +17,7 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-                var query = "SELECT DocumentID, RequestID, DocumentPath, UploadDate FROM Documents WHERE DocumentID = @DocumentID";
+                var query = "EXEC GetDocumentById @DocumentID"; // Call the procedure
 
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -51,7 +51,7 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-                var query = "SELECT DocumentID, RequestID, DocumentPath, UploadDate FROM Documents WHERE RequestID = @RequestID";
+                var query = "EXEC GetDocumentsByRequestId @RequestID"; // Call the procedure
 
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -84,9 +84,7 @@ namespace ID_Replacement.Data.Repositories.Class
             {
                 connection.Open();
 
-                var query = @"INSERT INTO Documents (RequestID, DocumentPath) 
-                              VALUES (@RequestID, @DocumentPath);
-                              SELECT SCOPE_IDENTITY();"; // Returns the newly inserted DocumentID
+                var query = "EXEC AddDocument @RequestID, @DocumentPath, @DocumentID OUTPUT"; // Call the procedure
 
                 using (var command = new SqlCommand(query, connection))
                 {
@@ -99,15 +97,13 @@ namespace ID_Replacement.Data.Repositories.Class
                     command.Parameters.AddWithValue("@RequestID", document.RequestID);
                     command.Parameters.AddWithValue("@DocumentPath", document.DocumentPath);
 
-                    var result = command.ExecuteScalar();
-                    if (result != null)
-                    {
-                        document.DocumentID = Convert.ToInt32(result);
-                    }
-                    else
-                    {
-                        throw new Exception("Failed to insert document.");
-                    }
+                    // Output parameter for DocumentID
+                    var documentIdParameter = new SqlParameter("@DocumentID", System.Data.SqlDbType.Int) { Direction = System.Data.ParameterDirection.Output };
+                    command.Parameters.Add(documentIdParameter);
+
+                    command.ExecuteNonQuery();
+
+                    document.DocumentID = Convert.ToInt32(documentIdParameter.Value);
                 }
             }
         }

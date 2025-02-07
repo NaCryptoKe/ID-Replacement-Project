@@ -17,25 +17,24 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-                var query = "SELECT RequestID, StudentID, RequestDate, Status, NotificationSent FROM IDRequests WHERE RequestID = @RequestID";
-
-                using (var command = new SqlCommand(query, connection))
+                var command = new SqlCommand("GetRequestById", connection)
                 {
-                    command.Parameters.AddWithValue("@RequestID", requestId);
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+                command.Parameters.AddWithValue("@RequestID", requestId);
 
-                    using (var reader = command.ExecuteReader())
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
                     {
-                        if (reader.Read())
+                        return new IDRequest
                         {
-                            return new IDRequest
-                            {
-                                RequestID = reader.GetInt32(0),
-                                StudentID = reader.GetString(1),
-                                RequestDate = reader.GetDateTime(2),
-                                Status = reader.GetString(3),
-                                NotificationSent = reader.GetBoolean(4)
-                            };
-                        }
+                            RequestID = reader.GetInt32(0),
+                            StudentID = reader.GetString(1),
+                            RequestDate = reader.GetDateTime(2),
+                            Status = reader.GetString(3),
+                            NotificationSent = reader.GetBoolean(4)
+                        };
                     }
                 }
             }
@@ -52,25 +51,24 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-                var query = "SELECT RequestID, StudentID, RequestDate, Status, NotificationSent FROM IDRequests WHERE StudentID = @StudentID";
-
-                using (var command = new SqlCommand(query, connection))
+                var command = new SqlCommand("GetRequestsByStudentId", connection)
                 {
-                    command.Parameters.AddWithValue("@StudentID", studentId);
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+                command.Parameters.AddWithValue("@StudentID", studentId);
 
-                    using (var reader = command.ExecuteReader())
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        requests.Add(new IDRequest
                         {
-                            requests.Add(new IDRequest
-                            {
-                                RequestID = reader.GetInt32(0),
-                                StudentID = reader.GetString(1),
-                                RequestDate = reader.GetDateTime(2),
-                                Status = reader.GetString(3),
-                                NotificationSent = reader.GetBoolean(4)
-                            });
-                        }
+                            RequestID = reader.GetInt32(0),
+                            StudentID = reader.GetString(1),
+                            RequestDate = reader.GetDateTime(2),
+                            Status = reader.GetString(3),
+                            NotificationSent = reader.GetBoolean(4)
+                        });
                     }
                 }
             }
@@ -85,32 +83,29 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-
-                var query = @"INSERT INTO IDRequests (StudentID, Status) 
-                              VALUES (@StudentID, @Status);
-                              SELECT SCOPE_IDENTITY();"; // Returns the newly inserted RequestID
-
-                using (var command = new SqlCommand(query, connection))
+                var command = new SqlCommand("AddRequest", connection)
                 {
-                    // Ensure StudentID is valid
-                    if (string.IsNullOrWhiteSpace(request.StudentID))
-                    {
-                        throw new ArgumentException("Invalid StudentID. Request must be linked to a valid student.");
-                    }
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
 
-                    command.Parameters.AddWithValue("@StudentID", request.StudentID);
-                    command.Parameters.AddWithValue("@Status", request.Status ?? "Pending");
-
-                    var result = command.ExecuteScalar();
-                    if (result != null)
-                    {
-                        request.RequestID = Convert.ToInt32(result);
-                    }
-                    else
-                    {
-                        throw new Exception("Failed to insert ID request.");
-                    }
+                // Ensure StudentID is valid
+                if (string.IsNullOrWhiteSpace(request.StudentID))
+                {
+                    throw new ArgumentException("Invalid StudentID. Request must be linked to a valid student.");
                 }
+
+                command.Parameters.AddWithValue("@StudentID", request.StudentID);
+                command.Parameters.AddWithValue("@Status", request.Status ?? "Pending");
+
+                var requestIdParam = new SqlParameter("@RequestID", System.Data.SqlDbType.Int)
+                {
+                    Direction = System.Data.ParameterDirection.Output
+                };
+                command.Parameters.Add(requestIdParam);
+
+                command.ExecuteNonQuery();
+
+                request.RequestID = (int)requestIdParam.Value;
             }
         }
 
@@ -122,18 +117,18 @@ namespace ID_Replacement.Data.Repositories.Class
             using (var connection = DatabaseContext.Instance.GetConnection())
             {
                 connection.Open();
-                var query = "UPDATE IDRequests SET Status = @Status WHERE RequestID = @RequestID";
-
-                using (var command = new SqlCommand(query, connection))
+                var command = new SqlCommand("UpdateRequestStatus", connection)
                 {
-                    command.Parameters.AddWithValue("@Status", status);
-                    command.Parameters.AddWithValue("@RequestID", requestId);
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
 
-                    int rowsAffected = command.ExecuteNonQuery();
-                    if (rowsAffected == 0)
-                    {
-                        throw new Exception($"No request found with ID {requestId}");
-                    }
+                command.Parameters.AddWithValue("@Status", status);
+                command.Parameters.AddWithValue("@RequestID", requestId);
+
+                int rowsAffected = command.ExecuteNonQuery();
+                if (rowsAffected == 0)
+                {
+                    throw new Exception($"No request found with ID {requestId}");
                 }
             }
         }

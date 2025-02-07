@@ -230,19 +230,6 @@ namespace ID_Replacement
                     LoadRequests();
                 }
             };
-
-            deleteButton.Click += (s, e) =>
-            {
-                if (deleteButton.Tag is AdminViewModel request)
-                {
-                    if (MessageBox.Show($"Delete request from {request.FullName}?", "Confirm",
-                        MessageBoxButtons.YesNo) == DialogResult.Yes)
-                    {
-                        admin.DeleteRequest(request.StudentID);
-                        LoadRequests();
-                    }
-                }
-            };
         }
 
         private void ListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -266,24 +253,20 @@ namespace ID_Replacement
             viewButton.Enabled = true;
             acceptButton.Enabled = isPending;
             denyButton.Enabled = isPending;
-            deleteButton.Enabled = !isPending;
 
             viewButton.Tag = request;
             acceptButton.Tag = request;
             denyButton.Tag = request;
-            deleteButton.Tag = request;
         }
 
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            deleteButton.Visible = tabControl.SelectedTab == completedTab;
             acceptButton.Visible = tabControl.SelectedTab == pendingTab;
             denyButton.Visible = tabControl.SelectedTab == pendingTab;
 
             viewButton.Enabled = false;
             acceptButton.Enabled = false;
             denyButton.Enabled = false;
-            deleteButton.Enabled = false;
         }
     }
 }
