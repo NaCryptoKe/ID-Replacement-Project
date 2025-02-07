@@ -8,7 +8,6 @@ namespace ID_Replacement
 {
     partial class AdminForm
     {
-        private Admin admin;
         private TabControl tabControl;
         private TabPage pendingTab;
         private TabPage completedTab;
@@ -115,6 +114,7 @@ namespace ID_Replacement
             Controls.Add(mainPanel);
             MaximizeBox = false;
             MinimizeBox = false;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 
             SetupEventHandlers();
         }

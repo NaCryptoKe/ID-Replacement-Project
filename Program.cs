@@ -1,9 +1,10 @@
-﻿using ID_Replacement.Data.Repositories.Class;
+﻿using System;
+using System.Windows.Forms;
+using ID_Replacement.Data.Repositories.Class;
 using ID_Replacement.Data.Repositories.Interface;
-using ID_Replacement.Services.Interface;
 using ID_Replacement.Services;
 using ID_Replacement.Services.Class;
-using ID_Replacement.Data.Models;
+using ID_Replacement.Services.Interface;
 
 namespace ID_Replacement
 {
@@ -12,26 +13,20 @@ namespace ID_Replacement
         [STAThread]
         static void Main()
         {
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Initialize repositories
+            // Initialize necessary repositories
             IStudentRepository studentRepository = new StudentRepository();
-            IIDRequestRepository idRequestRepository = new IDRequestRepository();
-            IAppointmentRepository appointmentRepository = new AppointmentRepository();
             IAdminViewModelRepository adminViewModelRepository = new AdminViewModelRepository();
-            IHistoryRepository historyRepository = new HistoryRepository();
 
-            IAdminViewModelService adminViewModelService = new AdminViewModelService(adminViewModelRepository);
+            // Initialize services
             IStudentService studentService = new StudentService(studentRepository);
+            IAdminViewModelService adminViewModelService = new AdminViewModelService(adminViewModelRepository);
 
-            Student student = new Student();
-            student.StudentID = "1";
-
-            // Start the AdminView Form with dependencies
-            Application.Run(new AdminForm(adminViewModelRepository));
+            // Start with Login Form
             //Application.Run(new LoginForm(studentService));
+            Application.Run(new AdminForm(adminViewModelRepository));
         }
     }
 }

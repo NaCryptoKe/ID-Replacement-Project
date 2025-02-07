@@ -1,0 +1,57 @@
+Transaction Report
+Generated on: 07_02_2025_17_11_50_215
+--------------------------------------------------
+Log ID | Table Name | Operation | Date | User ID
+--------------------------------------------------
+1 | Students | INSERT | 07-02-2025 16:49 | System
+2 | IDRequests | INSERT | 07-02-2025 16:57 | System
+3 | Documents | INSERT | 07-02-2025 16:57 | System
+4 | Documents | INSERT | 07-02-2025 16:57 | System
+5 | Appointments | INSERT | 07-02-2025 16:57 | System
+6 | Appointments | INSERT | 07-02-2025 16:57 | System
+7 | IDRequests | INSERT | 07-02-2025 16:58 | System
+8 | Documents | INSERT | 07-02-2025 16:58 | System
+9 | Documents | INSERT | 07-02-2025 16:58 | System
+10 | Appointments | INSERT | 07-02-2025 16:58 | System
+11 | Appointments | INSERT | 07-02-2025 16:58 | System
+12 | IDRequests | INSERT | 07-02-2025 16:58 | System
+13 | Documents | INSERT | 07-02-2025 16:58 | System
+14 | Documents | INSERT | 07-02-2025 16:58 | System
+15 | Appointments | INSERT | 07-02-2025 16:58 | System
+16 | Appointments | INSERT | 07-02-2025 16:58 | System
+17 | IDRequests | INSERT | 07-02-2025 16:59 | System
+18 | Documents | INSERT | 07-02-2025 16:59 | System
+19 | Documents | INSERT | 07-02-2025 16:59 | System
+20 | Appointments | INSERT | 07-02-2025 16:59 | System
+21 | Appointments | INSERT | 07-02-2025 16:59 | System
+22 | IDRequests | INSERT | 07-02-2025 16:59 | System
+23 | Documents | INSERT | 07-02-2025 16:59 | System
+24 | Documents | INSERT | 07-02-2025 16:59 | System
+25 | Appointments | INSERT | 07-02-2025 16:59 | System
+26 | Appointments | INSERT | 07-02-2025 16:59 | System
+27 | IDRequests | INSERT | 07-02-2025 17:00 | System
+28 | Documents | INSERT | 07-02-2025 17:00 | System
+29 | Documents | INSERT | 07-02-2025 17:00 | System
+30 | Appointments | INSERT | 07-02-2025 17:00 | System
+31 | Appointments | INSERT | 07-02-2025 17:00 | System
+32 | IDRequests | INSERT | 07-02-2025 17:07 | System
+33 | Documents | INSERT | 07-02-2025 17:07 | System
+34 | Documents | INSERT | 07-02-2025 17:07 | System
+35 | Appointments | INSERT | 07-02-2025 17:07 | System
+36 | Appointments | INSERT | 07-02-2025 17:07 | System
+37 | IDRequests | INSERT | 07-02-2025 17:08 | System
+38 | Documents | INSERT | 07-02-2025 17:08 | System
+39 | Documents | INSERT | 07-02-2025 17:08 | System
+40 | Appointments | INSERT | 07-02-2025 17:08 | System
+41 | Appointments | INSERT | 07-02-2025 17:08 | System
+42 | IDRequests | INSERT | 07-02-2025 17:09 | System
+43 | Documents | INSERT | 07-02-2025 17:09 | System
+44 | Documents | INSERT | 07-02-2025 17:09 | System
+45 | Appointments | INSERT | 07-02-2025 17:09 | System
+46 | Appointments | INSERT | 07-02-2025 17:09 | System
+47 | IDRequests | INSERT | 07-02-2025 17:10 | System
+48 | Documents | INSERT | 07-02-2025 17:10 | System
+49 | Documents | INSERT | 07-02-2025 17:10 | System
+50 | Appointments | INSERT | 07-02-2025 17:10 | System
+51 | Appointments | INSERT | 07-02-2025 17:10 | System
+52 | IDRequests | DELETE | 07-02-2025 17:11 | System

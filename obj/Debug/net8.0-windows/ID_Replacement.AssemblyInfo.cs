@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ID_Replacement")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+929e9b7cb983f73533f0effa1af470071a3e4b23")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+edf61ae6ff62a6a92ce948d29fb3e70198c2b798")]
 [assembly: System.Reflection.AssemblyProductAttribute("ID_Replacement")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ID_Replacement")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

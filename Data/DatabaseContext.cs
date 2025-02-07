@@ -25,7 +25,7 @@ namespace ID_Replacement.Data
         // Private constructor ensures no external instantiation
         private DatabaseContext()
         {
-            _connectionString = "Data Source=QUANTUMEDGE\\SQLEXPRESS;Initial Catalog=IDRepSysstem;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+            _connectionString = "Replace with your database connection string";
         }
 
         /* 

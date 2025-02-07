@@ -161,6 +161,7 @@
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Name = "MainFrame";
             Text = "MainFrame";
         }

@@ -164,7 +164,7 @@ namespace ID_Replacement
             // Display preview of entered details
             string previewMessage = $"Document: {selectedFilePath}\nReason: {reasonTextBox.Text}\nDate: {selectedDate.ToShortDateString()}";
             MessageBox.Show(previewMessage, "Submission Preview", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+            reasonTextBox.Text = "";
             // Reload the list of requests to reflect the new state
             LoadRequests();
         }
